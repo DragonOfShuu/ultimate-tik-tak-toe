@@ -9,6 +9,9 @@ Tic Tac toe. Whoever wins the upper Tic Tac Toe, wins the game!
 The winner of the lower Tic Tac Toe gets to choose the next tile to play inside of, however
 the other player gets the first move in the lower Tic Tac Toe.
 
+However, if the game is a draw, the tile becomes a wildcard, meaning that tile can be used
+for either player to win!
+
 ## Example Flow
 - Player 1 Starts Game
 - Player 1 will choose the tile to start the game
