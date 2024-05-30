@@ -1,30 +1,39 @@
-# React + TypeScript + Vite
+# Ultimate Tic Tac Toe
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tic Tac Toe is a very simple game; select 3 tiles in a row and beat your opponent! However, 
+ultimate Tic Tac Toe plays off of that and makes it a little more complicated; simply enough,
+you play Tic Tac Toe inside of Tic Tac Toe. First, select the square you would like to play 
+Tic Tac Toe in. The winner of the Tic Tac Toe in that game claims that tile in the upper
+Tic Tac toe. Whoever wins the upper Tic Tac Toe, wins the game!
 
-Currently, two official plugins are available:
+The winner of the lower Tic Tac Toe gets to choose the next tile to play inside of, however
+the other player gets the first move in the lower Tic Tac Toe.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Example Flow
+- Player 1 Starts Game
+- Player 1 will choose the tile to start the game
+- Player 2 then makes the first move.
+- If player 2 wins, they get to claim the tile in
+- The upper Tic Tac Toe, and choose the next tile to play in
+- It will be Player 1's turn inside the lower Tic Tac Toe
 
-## Expanding the ESLint configuration
+# Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Each tile will be given an id based on their location. They will be able to access a context
+which they can set certain tile data using their id. 
 
-- Configure the top-level `parserOptions` property like this:
+Id's will look like this on the board:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+|tic|tac|toe|
+|-|-|-
+|0|1|2|
+|3|4|5|
+|6|7|8|
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+When we want to reference a tile inside a tile, simply put the higher tile id first, then 
+the second id directly next to it.
+
+For example, if you wanted to reference tile 1 inside of 0, just do '01'. In the future, if we
+decide to expand the board, these values will use the hex system; once id's go over 9, to keep them
+at one char in length, we'll use letters instead of numbers (a, b, c...). This means that the max 
+size for a board will be 36.
