@@ -22,6 +22,12 @@ export const convertCoordsToDigit = (x: number, y: number, maxXSize: number) => 
  * state. 
  */
 
+export type TileType = {
+    id: string,
+    claimed: number|null,
+    innerGame: TileType[][]|null
+}
+
 class TileNode {
     innerGame: TileNode[][]|null
     id: string
@@ -76,7 +82,7 @@ class TileNode {
     //     this.claimed
     // }
 
-    exportJSON(): object {
+    exportJSON(): TileType {
         const inner = this.innerGame?.map((tiles) => {
             return tiles.map((tile) => {
                 return tile.exportJSON();
