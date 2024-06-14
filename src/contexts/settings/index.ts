@@ -4,6 +4,7 @@ export type SettingsDataType = {
     x: number,
     y: number,
     depth: number,
+    inARowCount: number,
 }
 
 export type SettingsActionType = 
@@ -21,6 +22,7 @@ export const useSettings = () => {
 }
 
 export const settingsReducer = (prevState: SettingsDataType, action: SettingsActionType) => {
+    console.log(action)
     return prevState;
 }
 

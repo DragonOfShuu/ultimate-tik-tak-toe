@@ -1,4 +1,4 @@
-import TileType from "../../components/tile/TileType"
+import TileNode from "../../components/tile/TileType"
 import { createContext, useContext } from 'react';
 
 export type TileTrackerContextType = {
@@ -7,10 +7,10 @@ export type TileTrackerContextType = {
 }
 
 export type TileTrackerActionType = 
-    | { type: 'setTiles', tiles: TileType[][] }
+    | { type: 'setTiles', tiles: TileNode[][] }
 
 export type TileTrackerDataType = {
-    tiles: TileType[][]
+    tileRoot: TileNode
 }
 
 export const TileTrackerContext = createContext<TileTrackerContextType|null>(null)
@@ -23,6 +23,7 @@ export const tileTrackerReducer = (
     prevState: TileTrackerDataType,
     action: TileTrackerActionType
 ) => {
+    console.log(action)
     // TODO: add functionality
     return prevState;
 }
