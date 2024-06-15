@@ -1,6 +1,6 @@
 import { useReducer, ReactNode } from "react"
 import TileTrackerContext, { tileTrackerReducer } from "."
-import TileNode from "../../components/tile/TileType"
+import TileNode from "./TileNode"
 
 type Props = {
     defaultTiles: TileNode[][]

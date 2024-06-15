@@ -1,4 +1,4 @@
-import { SettingsDataType } from "../../contexts/settings"
+import { SettingsDataType } from "../settings"
 
 export type TileNodeConstructType = 
     | [ id: string, parent: TileNode|null, innerGame: TileNode[][], settings: SettingsDataType, ]
@@ -78,9 +78,19 @@ class TileNode {
         return this.innerGame[y][x].getById(id.slice(1))
     }
 
-    // claim(playerInd: number) {
-    //     this.claimed
-    // }
+    claim(playerInd: number) {
+        this.claimed = playerInd;
+        this.parent?.checkClaim();
+    }
+
+    /**
+     * Check if the lower game has a winner.
+     * 
+     * If so, check the claim of the next parent
+     */
+    checkClaim() {
+
+    }
 
     exportJSON(): TileType {
         const inner = this.innerGame?.map((tiles) => {
