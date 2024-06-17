@@ -1,23 +1,27 @@
-import { useState } from 'react'
 import './App.sass'
-import SpecialButton from './components/SpecialButton';
+import { usePager } from './contexts/pager'
+import { useVisualSettings } from './contexts/visualSettings';
+import { adjustBrightness } from './libs/color';
+import GamePage from './pages/game';
+import StartGamePage from './pages/startGame';
+import TitlePage from './pages/title';
 
 function App() {
-    const [counter, setCounter] = useState(0);
+    const {page} = usePager();
+    const {visualSettings} = useVisualSettings();
 
     return (
-        <div className={`absolute inset-0`}>
+        <div className={`absolute inset-0`} style={{backgroundColor: adjustBrightness(visualSettings.colors.primary[950], -40)}}>
             <div className={`size-full flex flex-col place-items-center place-content-center gap-2`}>
-                {`Counter`}
-                <div className={`flex flex-row items-center gap-3`}>
-                    <SpecialButton onClick={()=> setCounter((x)=> x-1)}>
-                        {`<`}
-                    </SpecialButton>
-                    {counter}
-                    <SpecialButton onClick={()=> setCounter((x)=> x+1)}>
-                        {'>'}
-                    </SpecialButton>
-                </div>
+                {
+                    (()=> {
+                        switch (page) {
+                            case 'title':     return <TitlePage />
+                            case 'startGame': return <StartGamePage />
+                            case 'game':      return <GamePage />
+                        }
+                    })()
+                }
             </div>
         </div>
     )

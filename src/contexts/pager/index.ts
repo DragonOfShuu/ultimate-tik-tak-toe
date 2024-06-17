@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react"
 
 // All pages in the application
-export type Page = "settings"|"game"
+export type Page = "title"|"startGame"|"game"
 
 // Values the PagerContext stores
 export type PagerContextType = {
