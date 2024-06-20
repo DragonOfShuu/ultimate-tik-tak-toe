@@ -4,15 +4,15 @@ import App from './App.tsx'
 import './index.sass'
 import SettingsComp from './contexts/settings/SettingsComp.tsx'
 import PagerComp from './contexts/pager/PagerComp.tsx'
-import VisualSettingsComp from './contexts/visualSettings/VisualSettingsComp.tsx'
+import ThemeComp from './contexts/theme/ThemeComp.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <SettingsComp>
             <PagerComp startingPage={'title'}>
-                <VisualSettingsComp>
+                <ThemeComp>
                     <App />
-                </VisualSettingsComp>
+                </ThemeComp>
             </PagerComp>
         </SettingsComp>
     </React.StrictMode>,

@@ -24,6 +24,18 @@ const StartPage = (props: Props) => {
                         defaultValue={3}
                         name="x"
                     />
+                    <NumberOption 
+                        defaultValue={3}
+                        name="y"
+                    />
+                    <NumberOption 
+                        defaultValue={3}
+                        name="depth"
+                    />
+                    <NumberOption 
+                        defaultValue={3}
+                        name="depth"
+                    />
                 </div>
                 <SpecialButton onClick={handleSubmit}>
                     Start Game
