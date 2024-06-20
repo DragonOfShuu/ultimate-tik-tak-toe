@@ -1,5 +1,6 @@
 import SpecialButton from "../../components/SpecialButton";
 import { usePager } from "../../contexts/pager";
+import NumberOption from "./NumberOption";
 
 type Props = {
     className?: string
@@ -14,8 +15,19 @@ const StartPage = (props: Props) => {
 
     return (
         <div className={props.className}>
-            <div>
-                <SpecialButton onClick={handleSubmit} />
+            <div className="flex flex-col items-center gap-3">
+                <h1>
+                    Game Settings
+                </h1>
+                <div className={`flex flex-col items-stretch gap-2 w-48`}>
+                    <NumberOption 
+                        defaultValue={3}
+                        name="x"
+                    />
+                </div>
+                <SpecialButton onClick={handleSubmit}>
+                    Start Game
+                </SpecialButton>
             </div>
         </div>
     )

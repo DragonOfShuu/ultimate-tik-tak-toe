@@ -11,7 +11,7 @@ const DefaultTheme: ThemeType = {
     player3Icon: TicTacToeSquare,
     player4Icon: TicTacToeTri,
     colors: {
-        primary: {
+        secondary: {
             "50": '#ecfeff',
             "100": '#cffafe',
             "200": '#a5f3fc',
@@ -24,7 +24,7 @@ const DefaultTheme: ThemeType = {
             "900": '#164e63',
             "950": '#083344',
         },
-        secondary: {
+        primary: {
             '50': '#ecfdf5',
             '100': '#d1fae5',
             '200': '#a7f3d0',

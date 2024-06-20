@@ -11,7 +11,7 @@ function App() {
     const {visualSettings} = useVisualSettings();
 
     return (
-        <div className={`absolute inset-0`} style={{backgroundColor: adjustBrightness(visualSettings.colors.primary[950], -40)}}>
+        <div className={`absolute inset-0`} style={{backgroundColor: adjustBrightness(visualSettings.colors.secondary[950], -40)}}>
             <div className={`size-full flex flex-col place-items-center place-content-center gap-2`}>
                 {
                     (()=> {

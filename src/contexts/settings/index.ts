@@ -22,8 +22,12 @@ export const useSettings = () => {
 }
 
 export const settingsReducer = (prevState: SettingsDataType, action: SettingsActionType) => {
-    console.log(action)
-    return prevState;
+    const newState = {...prevState};
+    switch (action.type) {
+        case 'update': {
+            return {...newState, ...action.snew};
+        }    
+    }
 }
 
 export default SettingsContext;

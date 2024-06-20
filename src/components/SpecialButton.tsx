@@ -10,7 +10,7 @@ const SpecialButton = (props: Props) => {
     return (
         <div className={props.className}>
             <button 
-                className={`bg-fuchsia-700 hover:bg-fuchsia-600 active:bg-fuchsia-800 rounded-lg px-3 py-2`}
+                className={`bg-fuchsia-700 hover:bg-fuchsia-600 active:bg-fuchsia-800 rounded-lg px-3 py-2 w-full h-full`}
                 onClick={props.onClick}>
                 {props.children??''}
             </button>
