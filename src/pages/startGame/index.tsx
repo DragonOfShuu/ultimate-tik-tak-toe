@@ -13,13 +13,17 @@ const StartPage = (props: Props) => {
         setPage('game')
     }
 
+    const handleBack = () => {
+        setPage('title')
+    }
+
     return (
         <div className={props.className}>
             <div className="flex flex-col items-center gap-3">
                 <h1>
                     Game Settings
                 </h1>
-                <div className={`flex flex-col items-stretch gap-2 w-48`}>
+                <div className={`flex flex-col items-stretch gap-2 w-64 text-xl`}>
                     <NumberOption 
                         defaultValue={3}
                         name="x"
@@ -34,12 +38,18 @@ const StartPage = (props: Props) => {
                     />
                     <NumberOption 
                         defaultValue={3}
-                        name="depth"
+                        name="inARowCount"
+                        displayName="In a row"
                     />
                 </div>
-                <SpecialButton onClick={handleSubmit}>
-                    Start Game
-                </SpecialButton>
+                <div className={`flex flex-row gap-5`}>
+                    <SpecialButton onClick={handleBack}>
+                        Back
+                    </SpecialButton>
+                    <SpecialButton onClick={handleSubmit} importance>
+                        Start Game
+                    </SpecialButton>
+                </div>
             </div>
         </div>
     )
