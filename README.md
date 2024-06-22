@@ -40,3 +40,8 @@ For example, if you wanted to reference tile 1 inside of 0, just do '01'. In the
 decide to expand the board, these values will use the hex system; once id's go over 9, to keep them
 at one char in length, we'll use letters instead of numbers (a, b, c...). This means that the max 
 size for a board will be 36.
+
+## Player Claims/Player Index
+
+Players will have a zero-based index. If a tile is -1, this means
+it was a wildcard game.

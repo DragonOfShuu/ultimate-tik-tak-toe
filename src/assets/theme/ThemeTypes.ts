@@ -4,6 +4,7 @@ type ThemeType = {
     player2Icon: string,
     player3Icon: string,
     player4Icon: string,
+    wildCardIcon: string,
 }
 
 export type ThemeCompProps = {

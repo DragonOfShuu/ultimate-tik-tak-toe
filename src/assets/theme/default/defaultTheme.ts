@@ -10,6 +10,7 @@ const defaultTheme: ThemeType = {
     player2Icon: TicTacToeO,
     player3Icon: TicTacToeSquare,
     player4Icon: TicTacToeTri,
+    wildCardIcon: '',
 }
 
 export default defaultTheme;

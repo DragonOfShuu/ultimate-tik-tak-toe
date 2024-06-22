@@ -4,15 +4,20 @@ export type TileNodeConstructType =
     | [ id: string, parent: TileNode|null, innerGame: TileNode[][]|null, settings: SettingsDataType, ]
     | [ id: string, parent: TileNode|null, depthRemaining: number, settings: SettingsDataType, ]
 
-export const convertDigitToCoords = (digit: number, maxXSize: number) => {
+
+export const charScale = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+export const convertCharToCoords = (char: string, maxXSize: number) => {
+    const digit = charScale.indexOf(char);
     const y = Math.floor(digit / maxXSize);
     const x = digit % maxXSize;
     return {x, y};
 }
 
-export const convertCoordsToDigit = (x: number, y: number, maxXSize: number) => {
-    return ((y * maxXSize) + x)
+export const convertCoordsToChar = (x: number, y: number, maxXSize: number) => {
+    return charScale[(y * maxXSize) + x]
 }
+
 
 /**
  * Tiles will use an Object-Oriented solution, where the reducer 
@@ -66,7 +71,7 @@ class TileNode {
         const innerGame: TileNode[][] = [];
         for (let y = 0; y < this.settings.y; y++) {
             for (let x = 0; x < this.settings.x; x++) {
-                const idAddon = convertCoordsToDigit(x, y, this.settings.x).toString();
+                const idAddon = convertCoordsToChar(x, y, this.settings.x).toString();
                 innerGame[y][x] = new TileNode(this.id+idAddon, this, depth-1, this.settings);
             }
         }
@@ -79,8 +84,8 @@ class TileNode {
         if (this.innerGame===null) 
             throw new Error('The given string id does not correspond to a real node.')
 
-        const thisDigit = Number.parseInt(id[0]);
-        const {x, y} = convertDigitToCoords(thisDigit, this.settings.x)
+        const thisChar = id[0];
+        const {x, y} = convertCharToCoords(thisChar, this.settings.x)
         return this.innerGame[y][x].getById(id.slice(1))
     }
 
@@ -94,25 +99,34 @@ class TileNode {
      * 
      * If so, check the claim of the next parent
      */
-    checkClaim() {
+    private checkClaim() {
         if (!this.innerGame) throw new Error("Checking claims on lower board, but higher board doesn't have a lower board.")
         if (this.claimed !== null) { 
             this.parent?.checkClaim()
             return;
         }
 
+        // If the lower board did have a claim
         let hasClaim: null|number = null;
+        // If the lower board is full
+        let claimsFull: boolean = true;
         this.innerGame.forEach((row, y) => {
             if (hasClaim!==null) return
-            row.forEach((_, x)=> {
+            row.forEach((tile, x)=> {
                 if (hasClaim!==null) return;
+                if (tile.claimed===null) claimsFull = false;
                 hasClaim = this.checkNeighborClaims(x, y);
             })
         })
 
+        // If there are no claims on the lower baord...
+        if (claimsFull) {
+            // Then this is a wildcard!
+            this.claim(-1);
+            return;
+        }
         if (hasClaim===this.claimed) return
         this.claim(hasClaim);
-        this.parent?.checkClaim();
     }
 
     /**
@@ -126,7 +140,7 @@ class TileNode {
      * @param y origin y
      * @returns the claim by the player if there is a valid row
      */
-    checkNeighborClaims(x: number, y: number): number|null {
+    private checkNeighborClaims(x: number, y: number): number|null {
         // We are inside parent, but we are grabbing refs to 
         // origin child
         if (!this.innerGame) throw new Error("Ran a check neighbors when there are no children to search")
@@ -134,6 +148,8 @@ class TileNode {
 
         // If child is unclaimed, we know there are no claims in a row here
         if (child.claimed===null) return null;
+        // If child is a wildcard, let's ignore it
+        if (child.claimed===-1) return null;
 
         // These are the directions we need to check
         const directions: [x: number, y: number][] = [[-1, 0], [-1, 1], [0, 1], [1, 1]];
@@ -161,14 +177,15 @@ class TileNode {
      * @param currentCount the amount in a row we've found so far
      * @returns The amount of tiles with the same claim in a direction
      */
-    countInDirection(x: number, y: number, dir: [x: number, y: number], claimID: number, currentCount: number): number {
+    private countInDirection(x: number, y: number, dir: [x: number, y: number], claimID: number, currentCount: number): number {
         if (!this.innerGame) 
             throw new Error("'countInDirection' was ran on a node with no children to view.")
         const child = this.innerGame[y][x];
     
         // If we reached the edge, there are no more children to find
         if (!child) return currentCount
-        if (child.claimed !== claimID) return currentCount;
+        // If child claim is not what we are looking for, or is not a wildcard, we reached the end
+        if (child.claimed !== claimID || child.claimed!==-1) return currentCount;
 
         return this.countInDirection(x+dir[0], y+dir[1], dir, claimID, currentCount+1);
     }

@@ -5,6 +5,7 @@ export type SettingsDataType = {
     y: number,
     depth: number,
     inARowCount: number,
+    playerCount: number,
 }
 
 export type SettingsActionType = 

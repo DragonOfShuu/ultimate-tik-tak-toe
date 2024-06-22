@@ -1,4 +1,4 @@
-import { useTileTracker } from "../../contexts/tileTracker"
+import { useGameState } from "../../contexts/gameState"
 
 type Props = {
     className?: string
@@ -7,7 +7,7 @@ type Props = {
 }
 
 const Tile = (props: Props) => {
-    const {tileData, tileDispatch} = useTileTracker();
+    const {gameState: tileData, gameStateDispatch: tileDispatch} = useGameState();
 
     const correTile = tileData.tileRoot.getById(props.tileId)
 
