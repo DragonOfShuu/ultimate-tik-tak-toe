@@ -11,6 +11,7 @@ const backupSettings: SettingsDataType = {
     y: 3,
     depth: 2,
     inARowCount: 3,
+    playerCount: 2,
 }
 
 const SettingsComp = (props: Props) => {

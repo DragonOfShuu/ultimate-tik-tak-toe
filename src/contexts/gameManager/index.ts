@@ -48,16 +48,6 @@ export const gameManagerReducer = (
     action: GameManagerActionType
 ): GameManagerDataType => {
     switch (action.type) {
-        // case 'update': {
-        //     // action.changes(prevState.tileRoot)
-        //     // const newState = prevState.tileRoot.exportJSON();
-        //     // if (JSON.stringify(newState) === prevStateString)
-        //     //     return prevState;
-
-        //     // return { tileRoot: prevState.tileRoot, tileState: newState,  };
-        //     throw new Error("Update was not implemented");
-        // }
-
         case 'setRootTile': {
             const newRoot = action.root;
             const newState = newRoot.exportJSON();
@@ -84,16 +74,23 @@ export const gameManagerReducer = (
             // If tile is already claimed, ignore this
             if (tileRef.claimed!==null) return prevState;
 
+            // If tile clicked has no inner game
             if (tileRef.innerGame!==null) 
                 return {
                     ...prevState, 
-                    currentTileFocus: prevState.currentTileFocus, 
+                    currentTileFocus: tileRef.id, 
                     currentPlayerTurn: nextPlayer(prevState.settings.playerCount, prevState.currentPlayerTurn)
                 };
             
-            // TODO: Code what happens if we click a tile without an inner game, that is unclaimed
-            tileRef.claim(prevState.currentPlayerTurn);
-            return prevState;
+            // What happens if we click a tile without an inner game, that is unclaimed
+            const newFocus = tileRef.claim(prevState.currentPlayerTurn);
+            const newTileState = prevState.tileRoot.exportJSON();
+            return {
+                ...prevState,
+                tileState: newTileState,
+                currentPlayerTurn: nextPlayer(prevState.settings.playerCount, prevState.currentPlayerTurn),
+                currentTileFocus: newFocus
+            };
         }
     }
 }

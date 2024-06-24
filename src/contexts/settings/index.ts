@@ -8,6 +8,14 @@ export type SettingsDataType = {
     playerCount: number,
 }
 
+export const SettingsDataRanges: {[value in keyof SettingsDataType]: [number, number]|null} = {
+    x: [1, 5],
+    y: [1, 5],
+    depth: [1, 3],
+    inARowCount: null,
+    playerCount: [2, 4],
+}
+
 export type SettingsActionType = 
     | { type: 'update', snew: Partial<SettingsDataType> }
 

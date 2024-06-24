@@ -41,7 +41,24 @@ decide to expand the board, these values will use the hex system; once id's go o
 at one char in length, we'll use letters instead of numbers (a, b, c...). This means that the max 
 size for a board will be 36.
 
-## Game State and Settings
+## Setting settings
+When setting settings there has to be a system that manages minimums and maximums, as
+well as rules for each setting. This is where the SettingValuesManager comes in.
+
+This file will contain a function called "parseChanges". You'll pass in all changes
+as an object, and the rules as a second parameter. `parseChanges` will go through
+each key, and check the corresponding rule to make sure that the value is acceptable;
+if not, it will remove the values from `newChanges` (newChanges is a duplicate of
+changes).
+
+The rules will be an array of all possible keys of `changes`, and their possible 
+values. Each value will be an object called `Rule`. `Rule` will have a method called
+`test`, that will test if the new value follows the `rule` set. To make a new Rule, 
+`Rule` will have static methods you can run to create different rule types. For example,
+`minMax`, which will create a rule that makes sure the new value is in between the
+minimum and maximum. 
+
+## Game State
 
 Settings will first be stored and manipulated inside its own context before the game 
 starts. Once the settings have been finalized, and the user starts the game, we switch 

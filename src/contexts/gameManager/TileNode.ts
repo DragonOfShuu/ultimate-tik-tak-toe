@@ -62,6 +62,8 @@ class TileNode {
 
         const depth = options[2];
 
+        // If there is no more depth remaining,
+        // we end here
         if (depth === 0) {
             this.innerGame = null;
             return;
@@ -89,9 +91,18 @@ class TileNode {
         return this.innerGame[y][x].getById(id.slice(1))
     }
 
-    claim(playerInd: number|null) {
+    getRoot(): TileNode {
+        return this.parent?.getRoot()??this;
+    }
+
+    /**
+     * Claims this node, and returns the tileId to focus
+     * @param playerInd The player index that is claiming this node
+     * @returns closest parent that has not been claimed tileID
+     */
+    claim(playerInd: number|null): string {
         this.claimed = playerInd;
-        this.parent?.checkClaim();
+        return this.parent?.checkClaim()??'';
     }
 
     /**
@@ -99,11 +110,10 @@ class TileNode {
      * 
      * If so, check the claim of the next parent
      */
-    private checkClaim() {
+    private checkClaim(): string {
         if (!this.innerGame) throw new Error("Checking claims on lower board, but higher board doesn't have a lower board.")
         if (this.claimed !== null) { 
-            this.parent?.checkClaim()
-            return;
+            return this.parent?.checkClaim()??''
         }
 
         // If the lower board did have a claim
@@ -122,11 +132,16 @@ class TileNode {
         // If there are no claims on the lower baord...
         if (claimsFull) {
             // Then this is a wildcard!
-            this.claim(-1);
-            return;
+            return this.claim(-1);
         }
-        if (hasClaim===this.claimed) return
-        this.claim(hasClaim);
+
+        // If lower board did not have a claim,
+        // this tile stays in focus
+        if (hasClaim===null) return this.id;
+
+        // If lower board has a winner, then
+        // this tile is claimed.
+        return this.claim(hasClaim);
     }
 
     /**
