@@ -1,4 +1,4 @@
-import { useGameState } from "../../contexts/gameState"
+import { useGameManager } from "../../contexts/gameManager"
 
 type Props = {
     className?: string
@@ -7,7 +7,7 @@ type Props = {
 }
 
 const Tile = (props: Props) => {
-    const {gameState: tileData, gameStateDispatch: tileDispatch} = useGameState();
+    const {gameState: tileData, gameStateDispatch: tileDispatch} = useGameManager();
 
     const correTile = tileData.tileRoot.getById(props.tileId)
 

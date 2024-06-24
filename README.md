@@ -41,6 +41,24 @@ decide to expand the board, these values will use the hex system; once id's go o
 at one char in length, we'll use letters instead of numbers (a, b, c...). This means that the max 
 size for a board will be 36.
 
+## Game State and Settings
+
+Settings will first be stored and manipulated inside its own context before the game 
+starts. Once the settings have been finalized, and the user starts the game, we switch 
+to the game page, which will have the GameManager Context defined inside.
+
+To initialize the GameManager context, you'll pass a function called "initializeGameManager" 
+that'll take the current state of the settings, and it'll return the starting state for
+the game.
+
+```typescript
+const {settings} = useSettings();
+const [gameManager, gameManagerDispatch] = useReducer(gameManagerReducer, initializeGameManager(settings));
+```
+
+`initializeGameManager` will simply take the current set settings, and make an initial
+game state based on the info.
+
 ## Player Claims/Player Index
 
 Players will have a zero-based index. If a tile is -1, this means
