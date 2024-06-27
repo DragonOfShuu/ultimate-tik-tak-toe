@@ -52,11 +52,11 @@ if not, it will remove the values from `newChanges` (newChanges is a duplicate o
 changes).
 
 The rules will be an array of all possible keys of `changes`, and their possible 
-values. Each value will be an object called `Rule`. `Rule` will have a method called
-`test`, that will test if the new value follows the `rule` set. To make a new Rule, 
-`Rule` will have static methods you can run to create different rule types. For example,
-`minMax`, which will create a rule that makes sure the new value is in between the
-minimum and maximum. 
+values. Each value will be an object called `Rule`. `Rule` will be an abstract class, 
+and have a method called `test`, that will test if the new value follows the `rule` 
+set. To make a new Rule, `Rule` will have different class implementations. 
+For example, `minMax`, which will create a rule that makes 
+sure the new value is in between the minimum and maximum. 
 
 ## Game State
 

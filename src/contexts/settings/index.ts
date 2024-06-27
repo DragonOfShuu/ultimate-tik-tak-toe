@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import parseChanges, { MinMaxRule, RuleList } from '../../libs/ValueManager'
 
 export type SettingsDataType = {
     x: number,
@@ -8,12 +9,12 @@ export type SettingsDataType = {
     playerCount: number,
 }
 
-export const SettingsDataRanges: {[value in keyof SettingsDataType]: [number, number]|null} = {
-    x: [1, 5],
-    y: [1, 5],
-    depth: [1, 3],
-    inARowCount: null,
-    playerCount: [2, 4],
+export const SettingsDataRules: RuleList<SettingsDataType> = {
+    x: new MinMaxRule(3, 5),
+    y: new MinMaxRule(3, 5),
+    depth: new MinMaxRule(1, 3),
+    inARowCount: new MinMaxRule(1, 'x'),
+    playerCount: new MinMaxRule(2, 4),
 }
 
 export type SettingsActionType = 
@@ -34,7 +35,7 @@ export const settingsReducer = (prevState: SettingsDataType, action: SettingsAct
     const newState = {...prevState};
     switch (action.type) {
         case 'update': {
-            return {...newState, ...action.snew};
+            return {...newState, ...parseChanges(prevState, action.snew, SettingsDataRules)};
         }    
     }
 }
