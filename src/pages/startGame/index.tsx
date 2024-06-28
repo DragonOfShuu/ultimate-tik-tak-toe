@@ -3,56 +3,45 @@ import { usePager } from "../../contexts/pager";
 import NumberOption from "./NumberOption";
 
 type Props = {
-    className?: string
-}
+    className?: string;
+};
 
 const StartPage = (props: Props) => {
-    const {setPage} = usePager();
+    const { setPage } = usePager();
 
     const handleSubmit = () => {
-        setPage('game')
-    }
+        setPage("game");
+    };
 
     const handleBack = () => {
-        setPage('title')
-    }
+        setPage("title");
+    };
 
     return (
         <div className={props.className}>
             <div className="flex flex-col items-center gap-3">
-                <h1>
-                    Game Settings
-                </h1>
-                <div className={`flex flex-col items-stretch gap-2 w-64 text-xl`}>
-                    <NumberOption 
-                        defaultValue={3}
-                        name="x"
-                    />
-                    <NumberOption 
-                        defaultValue={3}
-                        name="y"
-                    />
-                    <NumberOption 
-                        defaultValue={3}
-                        name="depth"
-                    />
-                    <NumberOption 
+                <h1>Game Settings</h1>
+                <div
+                    className={`flex flex-col items-stretch gap-2 w-64 text-xl`}
+                >
+                    <NumberOption defaultValue={3} name="x" />
+                    <NumberOption defaultValue={3} name="y" />
+                    <NumberOption defaultValue={3} name="depth" />
+                    <NumberOption
                         defaultValue={3}
                         name="inARowCount"
                         displayName="In a row"
                     />
                 </div>
                 <div className={`flex flex-row gap-5`}>
-                    <SpecialButton onClick={handleBack}>
-                        Back
-                    </SpecialButton>
+                    <SpecialButton onClick={handleBack}>Back</SpecialButton>
                     <SpecialButton onClick={handleSubmit} importance>
                         Start Game
                     </SpecialButton>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default StartPage;

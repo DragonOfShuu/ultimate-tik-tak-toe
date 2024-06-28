@@ -1,17 +1,13 @@
-
 type Props = {
-    className?: string
-    
-}
+    className?: string;
+};
 
 const TicTacToeGrid = (props: Props) => {
     return (
         <div className={props.className}>
-            <div>
-
-            </div>
+            <div></div>
         </div>
-    )
-}
+    );
+};
 
 export default TicTacToeGrid;

@@ -1,10 +1,10 @@
-import { useReducer, ReactNode } from "react"
-import SettingsContext, { SettingsDataType, settingsReducer } from "."
+import { useReducer, ReactNode } from "react";
+import SettingsContext, { SettingsDataType, settingsReducer } from ".";
 
 type Props = {
-    defaultSettings?: SettingsDataType,
-    children?: ReactNode
-}
+    defaultSettings?: SettingsDataType;
+    children?: ReactNode;
+};
 
 const backupSettings: SettingsDataType = {
     x: 3,
@@ -12,16 +12,19 @@ const backupSettings: SettingsDataType = {
     depth: 2,
     inARowCount: 3,
     playerCount: 2,
-}
+};
 
 const SettingsComp = (props: Props) => {
-    const [settings, settingsDispatch] = useReducer(settingsReducer, props.defaultSettings??backupSettings)
+    const [settings, settingsDispatch] = useReducer(
+        settingsReducer,
+        props.defaultSettings ?? backupSettings,
+    );
 
     return (
-        <SettingsContext.Provider value={{settings, settingsDispatch}}>
+        <SettingsContext.Provider value={{ settings, settingsDispatch }}>
             {props.children}
         </SettingsContext.Provider>
-    )
-}
+    );
+};
 
 export default SettingsComp;

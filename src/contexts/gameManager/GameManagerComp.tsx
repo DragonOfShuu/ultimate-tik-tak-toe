@@ -1,20 +1,25 @@
-import { useReducer, ReactNode } from "react"
-import GameManagerContext, { gameManagerReducer, initGameManager } from "."
-import { SettingsDataType } from "../settings"
+import { useReducer, ReactNode } from "react";
+import GameManagerContext, { gameManagerReducer, initGameManager } from ".";
+import { SettingsDataType } from "../settings";
 
 type Props = {
-    settings: SettingsDataType
-    children: ReactNode
-}
+    settings: SettingsDataType;
+    children: ReactNode;
+};
 
 const GameManagerComp = (props: Props) => {
-    const [tiles, tilesDispatch] = useReducer(gameManagerReducer, initGameManager(props.settings));
+    const [tiles, tilesDispatch] = useReducer(
+        gameManagerReducer,
+        initGameManager(props.settings),
+    );
 
     return (
-        <GameManagerContext.Provider value={{gameState: tiles, gameStateDispatch: tilesDispatch}}>
+        <GameManagerContext.Provider
+            value={{ gameState: tiles, gameStateDispatch: tilesDispatch }}
+        >
             {props.children}
         </GameManagerContext.Provider>
-    )
-}
+    );
+};
 
 export default GameManagerComp;
