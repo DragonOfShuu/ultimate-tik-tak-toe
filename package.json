@@ -10,7 +10,8 @@
         "preview": "vite preview",
         "test": "vitest",
         "testui": "vitest --ui",
-        "coverage": "vitest run --coverage"
+        "coverage": "vitest run --coverage",
+        "format": "npx prettier . --write"
     },
     "dependencies": {
         "react": "^18.2.0",
