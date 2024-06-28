@@ -24,14 +24,23 @@ const exampleData: ExampleDataType = {
 
 test('Parse change', ()=> {
     const changes = parseChange(exampleData, 'temperature', 100, exampleRuleList.temperature)
-    expect(changes).toEqual({'temperature': 100})
+    expect.soft(changes).toEqual({'temperature': 100})
     const change1 = parseChange(exampleData, 'temperature', 101, exampleRuleList.temperature)
-    expect(change1).toEqual({})
+    expect.soft(change1).toEqual({})
 })
 
 test('Parse changes', ()=> {
-    const changes = parseChanges(exampleData, {'temperature': 20, 'lowerTemp': 18}, exampleRuleList)
-    expect(changes).toEqual({...exampleData, 'temperature': 20, 'lowerTemp': 18})
+    let expectedChanges: Partial<ExampleDataType> = {'lowerTemp': 18, 'temperature': 20, }
+    let changes = parseChanges(exampleData, expectedChanges, exampleRuleList)
+    expect.soft(changes).toEqual({...exampleData, ...expectedChanges})
+
+    expectedChanges = {'lowerTemp': 21, 'temperature': 20, }
+    changes = parseChanges(exampleData, expectedChanges, exampleRuleList)
+    expect.soft(changes).toEqual({...exampleData, 'temperature': 20})
+
+    expectedChanges = {'temperature': 18, }
+    changes = parseChanges(exampleData, expectedChanges, exampleRuleList)
+    expect.soft(changes).toEqual({...exampleData, 'temperature': 18, 'lowerTemp': 18})
 })
 
 test('MinMaxRule numerical basics', ()=> {

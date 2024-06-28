@@ -17,11 +17,15 @@ const parseChanges = <T extends {[x: string]: unknown}>(
 
     const rulesOrder = topSort(changesAndRules);
     
-    rulesOrder
-        .map((r)=> {
-            return {key: r.label, value: curr[r.label], rule: rules[r.label]};
-        })
-        .forEach((v)=> {
+    console.log(rulesOrder)
+
+    const keyValueRule = rulesOrder.map((r)=> {
+        return {key: r.label, value: changes[r.label], rule: rules[r.label]};
+    })
+        
+    console.log(keyValueRule)
+
+    keyValueRule.forEach((v)=> {
             const change = parseChange(newCurr, v.key, v.value as T[keyof T], v.rule)
             newCurr = {...newCurr, ...change}
         })
