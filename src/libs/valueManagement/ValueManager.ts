@@ -30,6 +30,10 @@ export const parseChange = <T extends { [x: string]: unknown }>(
     return allowed ? { [key]: value } : {};
 };
 
+const reactImplementChanges = () => {
+    
+}
+
 const convertToTopSortable = <T extends ValueDataType>(
     changes: Partial<T>,
     rules: RuleList<T>,

@@ -207,10 +207,10 @@ class TileNode {
                 child.claimed,
                 0,
             );
-            // @ts-expect-error number[] and [x: number, y: number] are the same in this case
             const rightCount = this.countInDirection(
                 x,
                 y,
+                // @ts-expect-error number[] and [x: number, y: number] are the same in this case
                 dir.map((v) => v * -1),
                 child.claimed,
                 0,
