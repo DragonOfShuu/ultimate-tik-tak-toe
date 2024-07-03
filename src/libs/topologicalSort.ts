@@ -1,8 +1,20 @@
+import { invertList } from "./objectEdit";
+
 export type TopSortableType = {
     label: string;
     dependents: string[];
 };
 
+export type TopSortableObjectType = {
+    [label: string]: string[];
+};
+
+/**
+ * Sorts data topologically, so all dependencies are completed before
+ * dependents are completed.
+ * @param sortable Sortable data
+ * @returns Topologically sorted data
+ */
 const topSort = (sortable: TopSortableType[]): TopSortableType[] => {
     const newSortable = [...sortable];
     const finishedSort: TopSortableType[] = [];
@@ -40,6 +52,46 @@ const containsAll = (partial: string[], fullList: string[]) => {
 
 const getLabels = (items: TopSortableType[]) => {
     return items.map((i) => i.label);
+};
+
+export const sortableListToObject = (
+    sortable: TopSortableType[],
+): TopSortableObjectType => {
+    return Object.fromEntries(sortable.map((s) => [s.label, s.dependents]));
+};
+
+export const sortableObjectToList = (
+    sortable: TopSortableObjectType,
+): TopSortableType[] => {
+    return Object.entries(sortable).map(([label, dependents]) => {
+        return {
+            label,
+            dependents,
+        };
+    });
+};
+
+export const fillDependencies = (
+    fullData: TopSortableType[],
+    partialData: TopSortableType[],
+) => {
+    const fullDataObject = sortableListToObject(fullData);
+    const addedDependencies: string[] = [];
+
+    const withDependencies: TopSortableType[] = partialData.reduce<TopSortableType[]>((prev, curr, _, all)=> {
+        prev.push(curr);
+        const missing = invertList(curr.dependents, getLabels(all));
+        if (!missing.length) return prev;
+
+        missing.forEach((missingDependency)=> {
+            addedDependencies.push(missingDependency);
+            prev.push({ label: missingDependency, dependents: fullDataObject[missingDependency] })
+        })
+
+        return prev;
+    }, [])
+
+    return { sortable: withDependencies, added: addedDependencies };
 };
 
 export default topSort;

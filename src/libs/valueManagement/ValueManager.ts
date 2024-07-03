@@ -1,5 +1,5 @@
 import { invertObject } from "../objectEdit";
-import topSort, { TopSortableType } from "../topologicalSort";
+import topSort, { fillDependencies, TopSortableType } from "../topologicalSort";
 import { Rule } from "./rules";
 import { KeyValueRuleType, RuleList, ValueDataType } from "./RuleTypes";
 
@@ -69,12 +69,18 @@ export const shallowParseChange = <T extends ValueDataType>(
     changes: Partial<T>,
     rules: RuleList<T>,
 ) => {
-    const changesAndRules: TopSortableType[] = convertToTopSortable(
+    const currDataSortable: TopSortableType[] = convertToTopSortable(
+        curr,
+        rules,
+    );
+    const changesSortable: TopSortableType[] = convertToTopSortable(
         changes,
         rules,
     );
 
-    const rulesOrder = topSort(changesAndRules);
+    const { sortable: changesAndDependenciesSortable, added } = fillDependencies(currDataSortable, changesSortable);
+
+    const rulesOrder = topSort(changesAndDependenciesSortable).filter((x)=> !added.includes(x.label));
 
     const keyValueRule = convertToKeyValueRule(rulesOrder, changes, rules);
     const { newData, changes: implementedChanges } = processChanges(
@@ -106,7 +112,7 @@ const convertToKeyValueRule = <T extends ValueDataType>(
         const newValue: T[string] | undefined = changes[r.label];
         const newRule = rules[r.label];
 
-        if (newValue === undefined) throw new Error("Why can I do this");
+        if (newValue === undefined) throw new Error("Changes does not contain what is intended to be converted");
 
         return {
             key: r.label,
@@ -143,6 +149,8 @@ export const parseChange = <T extends ValueDataType>(
     value: T[keyof T],
     rule: Rule<T>,
 ) => {
+    // If this change isn't even a change, ignore it
+    if (curr[key] === value) return {};
     const allowed = rule.test(curr, value);
     return allowed ? { [key]: value } : {};
 };
