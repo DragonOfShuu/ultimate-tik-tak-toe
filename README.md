@@ -60,6 +60,20 @@ set. To make a new Rule, `Rule` will have different class implementations.
 For example, `minMax`, which will create a rule that makes
 sure the new value is in between the minimum and maximum.
 
+After all changes have been made and implemented, the program will go through all
+rules where their corresponding values have not been changed, and it will run the
+`adjust` function. This will allow all rules to process any necessary side effects.
+
+The `adjust` function will return any necessary change side effects. These changes
+are grouped together and applied to the data exactly like how `parseChanges` adds
+any new changes; it topologically sorts them, and runs the `test` function.
+
+Because there is the possibility that when processing side effects an infinite loop
+may occur, the system will store how many times each key is updated. If a key is
+updated 3 times, an error will raise stating that there was an infinite cycle
+discovered, and it will dump a list of all changes that were processed to cause the 
+cycle.
+
 ## Game State
 
 Settings will first be stored and manipulated inside its own context before the game
@@ -85,3 +99,42 @@ game state based on the info.
 
 Players will have a zero-based index. If a tile is -1, this means
 it was a wildcard game.
+
+## Multiplayer
+
+There will be a gameManager component that will pass the game context, which will allow
+you to interact with the server or your own singleplayer game.
+
+If the game is singleplayer, it'll pass a normal variable with data and a dispatccher
+function for a reducer to interact with game data.
+
+However, if the game is using a server, the dispatch will be a function passed to the
+lower children. The lower children will use it exactly like the original reducer, but
+the parent will send the reducer dispatch arguments to the server instead.
+
+When the server responds, it will respond with the updates that need to be made to
+the data on the client, instead of an entirely new object to save clients from doing
+unnecessary rerenders.
+
+Child of gameManager context component ->
+
+```typescript
+gameStateDispatch({ type: "click", tileId: "23" });
+```
+
+inside gameState ->
+
+```typescript
+const gameStateDispatch = (action: GameStateActionType) => {
+    socket.emit("gameInteraction", action);
+};
+```
+
+inside gameState on server response ->
+
+```typescript
+socket.on("gameInterResponse", (data: Partial<GameStateDataType>) => {
+    // ... Append data changes to gameInter ...
+    setGameState(newData);
+});
+```

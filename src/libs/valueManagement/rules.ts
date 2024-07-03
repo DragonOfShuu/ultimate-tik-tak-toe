@@ -6,9 +6,7 @@ export abstract class Rule<T extends ValueDataType> {
     public abstract adjust(curr: T, key: string): Partial<T>;
 }
 
-type MinMaxType<T extends ValueDataType> = 
-    number | keyof T | null
-
+type MinMaxType<T extends ValueDataType> = number | keyof T | null;
 
 export class MinMaxRule<T extends ValueDataType> extends Rule<T> {
     min: MinMaxType<T>;
@@ -77,30 +75,36 @@ export class MinMaxRule<T extends ValueDataType> extends Rule<T> {
     }
 
     private minMaxToNumber(x: MinMaxType<T>, curr?: T) {
-        return typeof x==='string'&&curr ? curr[x] as number : null
+        return typeof x === "string" && curr ? (curr[x] as number) : null;
     }
 
-    private verifyMinMax(curr?: T, min?: MinMaxType<T>, max?: MinMaxType<T>): void {
-        const oldMin = this.minMaxToNumber(min??this.min, curr);
-        const oldMax = this.minMaxToNumber(max??this.max, curr);
+    private verifyMinMax(
+        curr?: T,
+        min?: MinMaxType<T>,
+        max?: MinMaxType<T>,
+    ): void {
+        const oldMin = this.minMaxToNumber(min ?? this.min, curr);
+        const oldMax = this.minMaxToNumber(max ?? this.max, curr);
 
-        if (oldMin===null||oldMax===null) return;
-        if (oldMin > oldMax) throw new Error("Minimum cannot be higher than maximum");
+        if (oldMin === null || oldMax === null) return;
+        if (oldMin > oldMax)
+            throw new Error("Minimum cannot be higher than maximum");
     }
 
     adjust(curr: T, key: keyof T): Partial<T> {
-        if (typeof this.max !== "string" && typeof this.min !== "string") return {}
+        if (typeof this.max !== "string" && typeof this.min !== "string")
+            return {};
 
         this.verifyMinMax(curr);
 
         const value = curr[key] as number;
-        const minValue = this.minMaxToNumber(this.min, curr)
-        const maxValue = this.minMaxToNumber(this.max, curr)
+        const minValue = this.minMaxToNumber(this.min, curr);
+        const maxValue = this.minMaxToNumber(this.max, curr);
 
-        if (maxValue!==null && value > maxValue) {
+        if (maxValue !== null && value > maxValue) {
             return { [key]: maxValue } as Partial<T>;
         }
-        if (minValue!==null && value < minValue) {
+        if (minValue !== null && value < minValue) {
             return { [key]: minValue } as Partial<T>;
         }
 
