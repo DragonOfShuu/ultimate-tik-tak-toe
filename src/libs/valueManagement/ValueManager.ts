@@ -9,8 +9,12 @@ const parseChanges = <T extends ValueDataType>(
     rules: RuleList<T>,
 ): Partial<T> => {
     // Process base changes
-    const {data: shallowChanges, implementedChanges} = shallowParseChange(curr, changes, rules)
-    
+    const { data: shallowChanges, implementedChanges } = shallowParseChange(
+        curr,
+        changes,
+        rules,
+    );
+
     // Process side effects from changes
     const finalData = reactImplementChanges(
         Object.keys(implementedChanges),
@@ -29,7 +33,7 @@ const reactImplementChanges = <T extends ValueDataType>(
     /** The keys that changed on the previous iteration */
     let newChangeKeys = [...changeKeys];
     /** The current state of the data */
-    let data = {...currentData};
+    let data = { ...currentData };
     /** The amount of times a key has been discovered */
     const increments: { [x in keyof T]: number } = Object();
     /** All changes that have occurred */
@@ -38,21 +42,31 @@ const reactImplementChanges = <T extends ValueDataType>(
     while (newChangeKeys.length) {
         const notChanged = invertObject<T>(currentData, changeKeys);
 
-        const sideEffectChanges = Object.entries(notChanged).reduce<Partial<T>>((prev, [propertyName])=> {
-            const changes = rules[propertyName].adjust(data, propertyName)
-            return {...prev, ...changes}
-        }, {});
+        const sideEffectChanges = Object.entries(notChanged).reduce<Partial<T>>(
+            (prev, [propertyName]) => {
+                const changes = rules[propertyName].adjust(data, propertyName);
+                return { ...prev, ...changes };
+            },
+            {},
+        );
 
         if (!Object.keys(sideEffectChanges).length) break;
 
-        const { data: newData, implementedChanges } = shallowParseChange(data, sideEffectChanges, rules);
+        const { data: newData, implementedChanges } = shallowParseChange(
+            data,
+            sideEffectChanges,
+            rules,
+        );
 
         allChanges.push(implementedChanges);
 
-        Object.keys(implementedChanges).forEach(propertyName=> {
-            increments[propertyName as keyof T] = (increments[propertyName]??0)+1;
+        Object.keys(implementedChanges).forEach((propertyName) => {
+            increments[propertyName as keyof T] =
+                (increments[propertyName] ?? 0) + 1;
             if (increments[propertyName] > 2) {
-                throw new Error('An infinite cycle of side effects has been discovered')
+                throw new Error(
+                    "An infinite cycle of side effects has been discovered",
+                );
             }
         });
 
@@ -78,9 +92,12 @@ export const shallowParseChange = <T extends ValueDataType>(
         rules,
     );
 
-    const { sortable: changesAndDependenciesSortable, added } = fillDependencies(currDataSortable, changesSortable);
+    const { sortable: changesAndDependenciesSortable, added } =
+        fillDependencies(currDataSortable, changesSortable);
 
-    const rulesOrder = topSort(changesAndDependenciesSortable).filter((x)=> !added.includes(x.label));
+    const rulesOrder = topSort(changesAndDependenciesSortable).filter(
+        (x) => !added.includes(x.label),
+    );
 
     const keyValueRule = convertToKeyValueRule(rulesOrder, changes, rules);
     const { newData, changes: implementedChanges } = processChanges(
@@ -88,8 +105,8 @@ export const shallowParseChange = <T extends ValueDataType>(
         curr,
     );
 
-    return { data: newData, implementedChanges }
-}
+    return { data: newData, implementedChanges };
+};
 
 const convertToTopSortable = <T extends ValueDataType>(
     changes: Partial<T>,
@@ -112,7 +129,10 @@ const convertToKeyValueRule = <T extends ValueDataType>(
         const newValue: T[string] | undefined = changes[r.label];
         const newRule = rules[r.label];
 
-        if (newValue === undefined) throw new Error("Changes does not contain what is intended to be converted");
+        if (newValue === undefined)
+            throw new Error(
+                "Changes does not contain what is intended to be converted",
+            );
 
         return {
             key: r.label,

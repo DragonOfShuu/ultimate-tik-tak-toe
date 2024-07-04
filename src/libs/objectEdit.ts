@@ -30,16 +30,10 @@ export const intersectObject = <T extends { [s: string]: unknown }>(
     return Object.fromEntries(newEntries) as Partial<T>;
 };
 
-export const invertList = <T>(
-    value: T[],
-    toInvert: T[],
-) => {
-    return value.filter(v => !toInvert.includes(v));
-}
+export const invertList = <T>(value: T[], toInvert: T[]) => {
+    return value.filter((v) => !toInvert.includes(v));
+};
 
-export const intersectList = <T>(
-    value: T[],
-    intersect: T[],
-) => {
-    return value.filter(v => intersect.includes(v));
-}
+export const intersectList = <T>(value: T[], intersect: T[]) => {
+    return value.filter((v) => intersect.includes(v));
+};

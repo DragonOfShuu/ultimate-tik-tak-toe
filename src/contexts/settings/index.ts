@@ -4,18 +4,16 @@ import { MinMaxRule } from "../../libs/valueManagement/rules";
 import { RuleList } from "../../libs/valueManagement/RuleTypes";
 
 export type SettingsDataType = {
-    x: number;
-    y: number;
+    size: number;
     depth: number;
     inARowCount: number;
     playerCount: number;
 };
 
 export const SettingsDataRules: RuleList<SettingsDataType> = {
-    x: new MinMaxRule(3, 5),
-    y: new MinMaxRule(3, 5),
+    size: new MinMaxRule(3, 5),
     depth: new MinMaxRule(1, 3),
-    inARowCount: new MinMaxRule(1, "x"),
+    inARowCount: new MinMaxRule(1, "size"),
     playerCount: new MinMaxRule(2, 4),
 };
 

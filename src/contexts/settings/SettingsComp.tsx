@@ -7,8 +7,7 @@ type Props = {
 };
 
 const backupSettings: SettingsDataType = {
-    x: 3,
-    y: 3,
+    size: 3,
     depth: 2,
     inARowCount: 3,
     playerCount: 2,

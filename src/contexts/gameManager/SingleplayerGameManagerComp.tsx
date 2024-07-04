@@ -7,7 +7,7 @@ type Props = {
     children: ReactNode;
 };
 
-const GameManagerComp = (props: Props) => {
+const SingleplayerGameManagerComp = (props: Props) => {
     const [tiles, tilesDispatch] = useReducer(
         gameManagerReducer,
         initGameManager(props.settings),
@@ -22,4 +22,4 @@ const GameManagerComp = (props: Props) => {
     );
 };
 
-export default GameManagerComp;
+export default SingleplayerGameManagerComp;

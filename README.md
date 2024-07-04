@@ -71,7 +71,7 @@ any new changes; it topologically sorts them, and runs the `test` function.
 Because there is the possibility that when processing side effects an infinite loop
 may occur, the system will store how many times each key is updated. If a key is
 updated 3 times, an error will raise stating that there was an infinite cycle
-discovered, and it will dump a list of all changes that were processed to cause the 
+discovered, and it will dump a list of all changes that were processed to cause the
 cycle.
 
 ## Game State
@@ -110,7 +110,8 @@ function for a reducer to interact with game data.
 
 However, if the game is using a server, the dispatch will be a function passed to the
 lower children. The lower children will use it exactly like the original reducer, but
-the parent will send the reducer dispatch arguments to the server instead.
+the parent will send the reducer dispatch arguments to the server instead. We'll do
+this by making a separate component called `gameManagerMultiComponent`.
 
 When the server responds, it will respond with the updates that need to be made to
 the data on the client, instead of an entirely new object to save clients from doing
@@ -138,3 +139,6 @@ socket.on("gameInterResponse", (data: Partial<GameStateDataType>) => {
     setGameState(newData);
 });
 ```
+
+There will be a multiplayer page and a singleplayer page,
+allowing for separation of the two modes.

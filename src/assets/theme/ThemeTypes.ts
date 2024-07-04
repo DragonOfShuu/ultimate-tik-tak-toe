@@ -5,6 +5,8 @@ type ThemeType = {
     player3Icon: string;
     player4Icon: string;
     wildCardIcon: string;
+    remainingDepthIcon: string;
+    modifiedDepthIcon: string;
 };
 
 export type ThemeCompProps = {

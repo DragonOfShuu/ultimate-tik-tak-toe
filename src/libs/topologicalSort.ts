@@ -78,18 +78,23 @@ export const fillDependencies = (
     const fullDataObject = sortableListToObject(fullData);
     const addedDependencies: string[] = [];
 
-    const withDependencies: TopSortableType[] = partialData.reduce<TopSortableType[]>((prev, curr, _, all)=> {
+    const withDependencies: TopSortableType[] = partialData.reduce<
+        TopSortableType[]
+    >((prev, curr, _, all) => {
         prev.push(curr);
         const missing = invertList(curr.dependents, getLabels(all));
         if (!missing.length) return prev;
 
-        missing.forEach((missingDependency)=> {
+        missing.forEach((missingDependency) => {
             addedDependencies.push(missingDependency);
-            prev.push({ label: missingDependency, dependents: fullDataObject[missingDependency] })
-        })
+            prev.push({
+                label: missingDependency,
+                dependents: fullDataObject[missingDependency],
+            });
+        });
 
         return prev;
-    }, [])
+    }, []);
 
     return { sortable: withDependencies, added: addedDependencies };
 };

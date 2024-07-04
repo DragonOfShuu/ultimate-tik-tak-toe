@@ -25,7 +25,7 @@ const NumberOption = (props: Props) => {
         setValue(settings[props.name]);
     }, [props.name, settings]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.FocusEvent<HTMLInputElement>) => {
         setSetting(Number.parseFloat(e.target.value));
     };
 
@@ -34,7 +34,7 @@ const NumberOption = (props: Props) => {
             className={props.className}
             name={props.displayName ?? props.name}
         >
-            <NumberInput onChange={handleChange} value={value} />
+            <NumberInput value={value} onBlur={handleChange} />
         </SettingsOption>
     );
 };

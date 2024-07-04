@@ -24,8 +24,7 @@ const StartPage = (props: Props) => {
                 <div
                     className={`flex flex-col items-stretch gap-2 w-64 text-xl`}
                 >
-                    <NumberOption defaultValue={3} name="x" />
-                    <NumberOption defaultValue={3} name="y" />
+                    <NumberOption defaultValue={3} name="size" />
                     <NumberOption defaultValue={3} name="depth" />
                     <NumberOption
                         defaultValue={3}

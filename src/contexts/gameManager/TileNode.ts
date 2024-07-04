@@ -79,12 +79,13 @@ class TileNode {
 
         // Create a new inner game
         const innerGame: TileNode[][] = [];
-        for (let y = 0; y < this.settings.y; y++) {
-            for (let x = 0; x < this.settings.x; x++) {
+        for (let y = 0; y < this.settings.size; y++) {
+            innerGame.push([]);
+            for (let x = 0; x < this.settings.size; x++) {
                 const idAddon = convertCoordsToChar(
                     x,
                     y,
-                    this.settings.x,
+                    this.settings.size,
                 ).toString();
                 innerGame[y][x] = new TileNode(
                     this.id + idAddon,
@@ -106,7 +107,7 @@ class TileNode {
             );
 
         const thisChar = id[0];
-        const { x, y } = convertCharToCoords(thisChar, this.settings.x);
+        const { x, y } = convertCharToCoords(thisChar, this.settings.size);
         return this.innerGame[y][x].getById(id.slice(1));
     }
 
