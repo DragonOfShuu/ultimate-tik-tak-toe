@@ -31,6 +31,7 @@ const StartPage = (props: Props) => {
                         name="inARowCount"
                         displayName="In a row"
                     />
+                    <NumberOption defaultValue={2} name="playerCount" displayName="players" />
                 </div>
                 <div className={`flex flex-row gap-5`}>
                     <SpecialButton onClick={handleBack}>Back</SpecialButton>

@@ -52,6 +52,7 @@ class TileNode {
     id: string;
     parent: TileNode | null;
     settings: SettingsDataType;
+    /** The player claim index for this tile. If the value is -1, this tile is a wildcard */
     claimed: number | null;
 
     constructor(...options: TileNodeConstructType) {
@@ -127,8 +128,13 @@ class TileNode {
 
     /**
      * Check if the lower game has a winner.
-     *
      * If so, check the claim of the next parent
+     * 
+     * THIS FUNCTION HAS SIDE EFFECTS! It will 
+     * distribute necessary claims if there is
+     * a winner on a lower board.
+     * 
+     * @returns closest parent that has not been claimed tileID
      */
     private checkClaim(): string {
         if (!this.innerGame)
@@ -261,6 +267,30 @@ class TileNode {
             claimID,
             currentCount + 1,
         );
+    }
+
+    /**
+     * @returns true if there are any
+     * claims made on this board or
+     * lower boards
+     */
+    isModified(): boolean {
+        // If this tile is claimed, it has been modified
+        if (this.claimed!==null) return true;
+        // If this tile does not have an inner game
+        // and has not been claimed, return false
+        if (this.innerGame===null) return false;
+        for (const row of this.innerGame) {
+            for (const tile of row) {
+                const value = tile.isModified();
+                // If the lower tile has been 
+                // modified, return true
+                if (value) return true;
+            }
+        }
+        // If no tile has been modified, return
+        // false
+        return false;
     }
 
     exportJSON(): TileType {

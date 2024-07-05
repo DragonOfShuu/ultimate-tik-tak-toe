@@ -1,5 +1,6 @@
 import SingleplayerGameManagerComp from "../../contexts/gameManager/SingleplayerGameManagerComp";
 import { useSettings } from "../../contexts/settings";
+import GameDisplay from "./GameDisplay";
 
 type Props = {
     className?: string;
@@ -11,7 +12,7 @@ const GamePage = (props: Props) => {
     return (
         <SingleplayerGameManagerComp settings={settings}>
             <div className={props.className}>
-                <div>GamePage</div>
+                <GameDisplay />
             </div>
         </SingleplayerGameManagerComp>
     );

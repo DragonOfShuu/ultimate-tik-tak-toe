@@ -8,8 +8,8 @@ export type GameManagerContextType = {
 };
 
 export type GameManagerActionType =
-    // | { type: 'update', changes: (root?: TileNode)=>void }
-    { type: "setRootTile"; root: TileNode } | { type: "click"; tileId: string };
+    | { type: "setRootTile"; root: TileNode } 
+    | { type: "click"; tileId: string };
 
 export type GameManagerDataType = {
     settings: SettingsDataType;
@@ -81,7 +81,7 @@ export const gameManagerReducer = (
             // If tile is already claimed, ignore this
             if (tileRef.claimed !== null) return prevState;
 
-            // If tile clicked has no inner game
+            // If tile clicked has an inner game
             if (tileRef.innerGame !== null)
                 return {
                     ...prevState,
