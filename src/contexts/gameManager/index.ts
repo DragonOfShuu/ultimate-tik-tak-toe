@@ -41,7 +41,7 @@ export const initGameManager = (
     };
 };
 
-const nextPlayer = (playerCount: number, currentPlayerIndex: number) => {
+export const nextPlayer = (playerCount: number, currentPlayerIndex: number) => {
     const nextIndex = currentPlayerIndex + 1;
     return nextIndex % playerCount;
 };
@@ -68,6 +68,7 @@ export const gameManagerReducer = (
         }
 
         case "click": {
+            console.log("click ran")
             if (prevState === null)
                 throw new Error(
                     "Click was ran when a game was not initialized",
@@ -77,7 +78,8 @@ export const gameManagerReducer = (
             if (action.tileId.length !== prevState.currentTileFocus.length + 1)
                 return prevState;
 
-            const tileRef = prevState.tileRoot.getById(action.tileId);
+            const newTileRoot = TileNode.importJSON(prevState.tileRoot.exportJSON(), prevState.settings);
+            const tileRef = newTileRoot.getById(action.tileId);
             // If tile is already claimed, ignore this
             if (tileRef.claimed !== null) return prevState;
 
@@ -85,6 +87,7 @@ export const gameManagerReducer = (
             if (tileRef.innerGame !== null)
                 return {
                     ...prevState,
+                    tileRoot: newTileRoot,
                     currentTileFocus: tileRef.id,
                     currentPlayerTurn: nextPlayer(
                         prevState.settings.playerCount,
@@ -94,9 +97,11 @@ export const gameManagerReducer = (
 
             // What happens if we click a tile without an inner game, that is unclaimed
             const newFocus = tileRef.claim(prevState.currentPlayerTurn);
-            const newTileState = prevState.tileRoot.exportJSON();
-            return {
+            const newTileState = newTileRoot.exportJSON();
+            console.log("Tile with no inner game was clicked. Player should now be: ", nextPlayer(prevState.settings.playerCount, prevState.currentPlayerTurn))
+            const newStateAfterClick = {
                 ...prevState,
+                tileRoot: newTileRoot,
                 tileState: newTileState,
                 currentPlayerTurn: nextPlayer(
                     prevState.settings.playerCount,
@@ -104,6 +109,8 @@ export const gameManagerReducer = (
                 ),
                 currentTileFocus: newFocus,
             };
+            console.log("New state after click: ", newStateAfterClick)
+            return newStateAfterClick;
         }
     }
 };

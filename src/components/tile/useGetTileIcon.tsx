@@ -1,5 +1,6 @@
 import ThemeType from "../../assets/theme/ThemeTypes";
 import TileNode from "../../contexts/gameManager/TileNode";
+import { getPlayerIcon } from "../../contexts/theme/utils";
 
 
 const useGetTileIcon = (theme: ThemeType, tile: TileNode): string|null => {
@@ -9,12 +10,8 @@ const useGetTileIcon = (theme: ThemeType, tile: TileNode): string|null => {
     // If tile is not claimed, and there is no lower game,
     // then this tile should be empty
     if (tile.claimed===null) return null;
-    if (tile.claimed===-1)
-        return theme.wildCardIcon;
     
-    // Now we know that the tile is claimed...
-    const claimList = [ theme.player1Icon, theme.player2Icon, theme.player3Icon, theme.player4Icon ];
-    return claimList[tile.claimed];
+    return getPlayerIcon(theme, tile.claimed);
 }
 
 export default useGetTileIcon;

@@ -27,7 +27,8 @@ const TicTacToeGrid = ({id, className}: Props) => {
             <div className={`size-full grid`} style={{gridTemplateRows: gridTemplates, gridTemplateColumns: gridTemplates}}>
                 {
                     Object.keys([...Array(tileInnerCount)]).map((idAddon)=> {
-                        return <Tile tileId={thisId+idAddon} />
+                        const newTileId = thisId+idAddon;
+                        return <Tile tileId={newTileId} key={newTileId} />
                     })
                 }
             </div>
