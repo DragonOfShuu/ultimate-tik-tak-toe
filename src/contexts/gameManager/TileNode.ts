@@ -5,12 +5,14 @@ export type TileNodeConstructType =
           id: string,
           parent: TileNode | null,
           innerGame: TileNode[][] | null,
+          claim: number|null,
           settings: SettingsDataType,
       ]
     | [
           id: string,
           parent: TileNode | null,
           depthRemaining: number,
+          claim: number|null,
           settings: SettingsDataType,
       ];
 
@@ -26,6 +28,27 @@ export const convertCharToCoords = (char: string, maxXSize: number) => {
 export const convertCoordsToChar = (x: number, y: number, maxXSize: number) => {
     return charScale[y * maxXSize + x];
 };
+
+export const getTileById = (tile: TileType, id: string): TileType => {
+    if (!id.startsWith(tile.id)) throw new Error('Id is not inside of this tile.');
+    if (tile.id===id) return tile;
+    if (tile.innerGame===null) throw new Error('Id is too long, the tile does not exist');
+    for (const i of tile.innerGame) {
+        if (id.startsWith(i.id))
+            return getTileById(i, id);
+    }
+    throw new Error('Id references a tile that does not exist.')
+}
+
+export const isTileModified = (tile: TileType): boolean => {
+    if (tile.claimed!==null) return true;
+    if (tile.innerGame===null) return false;
+    for (const i of tile.innerGame) {
+        const isModified = isTileModified(i);
+        if (isModified) return true;
+    }
+    return false;
+}
 
 /**
  * Tiles will use an Object-Oriented solution, where the reducer
@@ -44,7 +67,7 @@ export const convertCoordsToChar = (x: number, y: number, maxXSize: number) => {
 export type TileType = {
     id: string;
     claimed: number | null;
-    innerGame: TileType[][] | null;
+    innerGame: TileType[] | null;
 };
 
 class TileNode {
@@ -59,7 +82,8 @@ class TileNode {
         // initialize the constants
         this.id = options[0];
         this.parent = options[1];
-        this.settings = options[3];
+        this.claimed = options[3];
+        this.settings = options[4];
         this.claimed = null;
 
         // If it is not relative to depth, and
@@ -92,6 +116,7 @@ class TileNode {
                     this.id + idAddon,
                     this,
                     depth - 1,
+                    null,
                     this.settings,
                 );
             }
@@ -294,12 +319,14 @@ class TileNode {
     }
 
     exportJSON(): TileType {
-        const inner =
-            this.innerGame?.map((tiles) => {
-                return tiles.map((tile) => {
-                    return tile.exportJSON();
-                });
-            }) || null;
+        // const inner =
+        //     this.innerGame?.reduce<TileType[]>((newInner, tiles) => {
+        //         const moreTiles = tiles.map((tile) => {
+        //             return tile.exportJSON();
+        //         });
+        //         return [...newInner, ...moreTiles];
+        //     }, []) || null;
+        const inner = this.innerGame?.flatMap((m)=> m.map(x=> x.exportJSON()))||null
 
         return {
             id: this.id,
@@ -311,13 +338,23 @@ class TileNode {
     public static importJSON(
         x: TileType,
         settings: SettingsDataType,
+        parent?: TileNode
     ): TileNode {
+        const newTile = new TileNode(x.id, parent??null, [], x.claimed, settings);
+        // const newInnerGame = 
+        //     x.innerGame?.map((row) =>
+        //         row.map((tile) => this.importJSON(tile, settings, newTile)),
+        //     ) || null;
         const newInnerGame =
-            x.innerGame?.map((row) =>
-                row.map((tile) => this.importJSON(tile, settings)),
-            ) || null;
-
-        return new TileNode(x.id, null, newInnerGame, settings);
+            x.innerGame?.reduce<TileNode[][]>((prev, curr, ind)=> {
+                if (ind % settings.size === 0) prev.push([]);
+                const latestArray = prev.slice(-1)[0];
+                latestArray.push(this.importJSON(curr, settings, newTile));
+                prev[prev.length-1] = latestArray;
+                return prev;
+            }, []) || null
+        newTile.innerGame = newInnerGame;
+        return newTile;
     }
 }
 

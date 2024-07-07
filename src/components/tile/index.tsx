@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useGameManager } from "../../contexts/gameManager";
 import { useTheme } from "../../contexts/theme";
 import useGetTileIcon from "./useGetTileIcon";
+import { getTileById } from "../../contexts/gameManager/TileNode";
 
 type Props = {
     className?: string;
@@ -14,7 +15,7 @@ const Tile = (props: Props) => {
         useGameManager();
     const { theme } = useTheme();
 
-    const correTile = useMemo(() => gameState.tileRoot.getById(props.tileId), [gameState.tileRoot, props.tileId]);
+    const correTile = useMemo(() => getTileById(gameState.tileState, props.tileId), [gameState.tileState, props.tileId]);
     const tileIcon = useGetTileIcon(theme, correTile);
 
     const handleClick = (e: React.MouseEvent) => {

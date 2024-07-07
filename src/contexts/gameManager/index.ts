@@ -8,12 +8,12 @@ export type GameManagerContextType = {
 };
 
 export type GameManagerActionType =
-    | { type: "setRootTile"; root: TileNode } 
+    | { type: "setTileState"; root: TileType } 
     | { type: "click"; tileId: string };
 
 export type GameManagerDataType = {
     settings: SettingsDataType;
-    tileRoot: TileNode;
+    // tileRoot: TileNode;
     tileState: TileType;
     currentPlayerTurn: number;
     currentTileFocus: string;
@@ -30,12 +30,9 @@ export const useGameManager = () => {
 export const initGameManager = (
     settings: SettingsDataType,
 ): GameManagerDataType => {
-    const initRoot = new TileNode("", null, settings.depth, settings);
-
     return {
         settings: settings,
-        tileRoot: initRoot,
-        tileState: initRoot.exportJSON(),
+        tileState: new TileNode("", null, settings.depth, null, settings).exportJSON(),
         currentPlayerTurn: 0,
         currentTileFocus: "",
     };
@@ -50,18 +47,15 @@ export const gameManagerReducer = (
     prevState: GameManagerDataType,
     action: GameManagerActionType,
 ): GameManagerDataType => {
+    console.log("Reducer ran")
     switch (action.type) {
-        case "setRootTile": {
-            const newRoot = action.root;
-            const newState = newRoot.exportJSON();
-
-            if (newRoot === prevState.tileRoot) return prevState;
+        case "setTileState": {
+            if (action.root === prevState.tileState) return prevState;
 
             // If the root is different and the new state has changed
             return {
                 settings: prevState.settings,
-                tileRoot: newRoot,
-                tileState: newState,
+                tileState: action.root,
                 currentPlayerTurn: prevState?.currentPlayerTurn ?? 0,
                 currentTileFocus: prevState?.currentTileFocus ?? "",
             };
@@ -78,30 +72,31 @@ export const gameManagerReducer = (
             if (action.tileId.length !== prevState.currentTileFocus.length + 1)
                 return prevState;
 
-            const newTileRoot = TileNode.importJSON(prevState.tileRoot.exportJSON(), prevState.settings);
+            const newTileRoot = TileNode.importJSON(prevState.tileState, prevState.settings);
             const tileRef = newTileRoot.getById(action.tileId);
             // If tile is already claimed, ignore this
             if (tileRef.claimed !== null) return prevState;
 
             // If tile clicked has an inner game
-            if (tileRef.innerGame !== null)
-                return {
+            if (tileRef.innerGame !== null) {
+                const newStateAfterInnerGame = {
                     ...prevState,
-                    tileRoot: newTileRoot,
+                    tileState: newTileRoot.exportJSON(),
                     currentTileFocus: tileRef.id,
                     currentPlayerTurn: nextPlayer(
                         prevState.settings.playerCount,
                         prevState.currentPlayerTurn,
                     ),
                 };
+                console.log('Has an inner game: ', newStateAfterInnerGame)
+                return newStateAfterInnerGame
+            }
 
             // What happens if we click a tile without an inner game, that is unclaimed
             const newFocus = tileRef.claim(prevState.currentPlayerTurn);
             const newTileState = newTileRoot.exportJSON();
-            console.log("Tile with no inner game was clicked. Player should now be: ", nextPlayer(prevState.settings.playerCount, prevState.currentPlayerTurn))
             const newStateAfterClick = {
                 ...prevState,
-                tileRoot: newTileRoot,
                 tileState: newTileState,
                 currentPlayerTurn: nextPlayer(
                     prevState.settings.playerCount,
