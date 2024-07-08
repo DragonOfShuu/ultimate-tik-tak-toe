@@ -84,7 +84,6 @@ class TileNode {
         this.parent = options[1];
         this.claimed = options[3];
         this.settings = options[4];
-        this.claimed = null;
 
         // If it is not relative to depth, and
         // instead we are given the next inner game
@@ -282,7 +281,7 @@ class TileNode {
         // If we reached the edge, there are no more children to find
         if (!child) return currentCount;
         // If child claim is not what we are looking for, or is not a wildcard, we reached the end
-        if (child.claimed !== claimID || child.claimed !== -1)
+        if (child.claimed !== claimID || child.claimed === -1)
             return currentCount;
 
         return this.countInDirection(
@@ -341,10 +340,6 @@ class TileNode {
         parent?: TileNode
     ): TileNode {
         const newTile = new TileNode(x.id, parent??null, [], x.claimed, settings);
-        // const newInnerGame = 
-        //     x.innerGame?.map((row) =>
-        //         row.map((tile) => this.importJSON(tile, settings, newTile)),
-        //     ) || null;
         const newInnerGame =
             x.innerGame?.reduce<TileNode[][]>((prev, curr, ind)=> {
                 if (ind % settings.size === 0) prev.push([]);
