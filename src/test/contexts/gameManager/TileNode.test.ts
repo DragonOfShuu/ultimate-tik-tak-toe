@@ -1,45 +1,12 @@
 import { expect, test } from "vitest";
-import TileNode, { TileType } from "../../../contexts/gameManager/TileNode";
-import { SettingsDataType } from "../../../contexts/settings";
+import { basicTileType, newBasicTileGame } from "./TileNodeTestToolkit";
 
-
-const basicTileInner: TileType[] = []
-for (let index = 0; index<9; index++) {
-    const claimInd = index%3;
-    const claimed = claimInd===0?null:claimInd-1
-    basicTileInner.push(
-        {
-            claimed: index>5?null:claimed,
-            id: `0${index}`,
-            innerGame: null,
-        }
-    )
-}
-
-const basicTileTypeExample = (): TileType => {
-    return JSON.parse(JSON.stringify({
-        claimed: null,
-        id: '0',
-        innerGame: basicTileInner
-    }))
-}
-
-const basicSettingsExample: SettingsDataType = {
-    depth: 2,
-    inARowCount: 3,
-    playerCount: 2,
-    size: 3,
-}
-
-const newBasicTileGame = () => {
-    return TileNode.importJSON(basicTileTypeExample(), basicSettingsExample)
-}
 
 test('Input of ImportJSON equals the output of ExportJSON', ()=> {
     const importObject = newBasicTileGame();
     console.log("After import: ")
     console.dir(importObject, { depth: null })
-    expect(importObject.exportJSON()).toEqual(basicTileTypeExample())
+    expect(importObject.exportJSON()).toEqual(basicTileType())
 })
 
 test('Count In Direction Works', ()=> {
