@@ -9,7 +9,7 @@ test('Input of ImportJSON equals the output of ExportJSON', ()=> {
     expect(importObject.exportJSON()).toEqual(basicTileType())
 })
 
-test('Count In Direction Works', ()=> {
+test('Count In Direction Counts Correctly', ()=> {
     const tileRoot = newBasicTileGame();
 
     if (tileRoot.innerGame===null) throw new Error("TileRoot inner game is null")

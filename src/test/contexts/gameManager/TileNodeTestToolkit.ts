@@ -1,5 +1,5 @@
 import { initGameManager } from "../../../contexts/gameManager";
-import TileNode, { TileType } from "../../../contexts/gameManager/TileNode";
+import TileNode, { getTileById, TileType } from "../../../contexts/gameManager/TileNode";
 import { SettingsDataType } from "../../../contexts/settings";
 
 const basicTileInner: TileType[] = []
@@ -39,4 +39,20 @@ export const basicTileType = (warpGames?: (innerGame: TileType[]) => TileType[])
 
 export const newBasicTileGame = () => {
     return TileNode.importJSON(basicTileType(), basicSettingsExample)
+}
+
+/**
+ * Warps the inner game of the given id. This function returns a new root.
+ * @param id id of the tile to warp
+ * @param tileRoot the root tile to warp from
+ * @param warp function to warp using
+ * @returns A new root
+ */
+export const warpId = (id: string, tileRoot: TileType, warp: (innerGame: TileType[]) => TileType[]): TileType => {
+    const newRoot = JSON.parse(JSON.stringify(tileRoot));
+    const ref = getTileById(newRoot, id);
+    if (ref.innerGame===null) throw new Error("Referenced tile must have an innerGame")
+    const newInner = warp(ref.innerGame);
+    ref.innerGame = newInner;
+    return ref;
 }
