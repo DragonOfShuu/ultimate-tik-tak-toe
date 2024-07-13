@@ -42,17 +42,16 @@ export const newBasicTileGame = () => {
 }
 
 /**
- * Warps the inner game of the given id. This function returns a new root.
+ * Warps the inner game of the given id. This function returns back the root
  * @param id id of the tile to warp
  * @param tileRoot the root tile to warp from
  * @param warp function to warp using
- * @returns A new root
+ * @returns the root
  */
 export const warpId = (id: string, tileRoot: TileType, warp: (innerGame: TileType[]) => TileType[]): TileType => {
-    const newRoot = JSON.parse(JSON.stringify(tileRoot));
-    const ref = getTileById(newRoot, id);
+    const ref = getTileById(tileRoot, id);
     if (ref.innerGame===null) throw new Error("Referenced tile must have an innerGame")
     const newInner = warp(ref.innerGame);
     ref.innerGame = newInner;
-    return ref;
+    return tileRoot;
 }
