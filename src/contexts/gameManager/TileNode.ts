@@ -177,10 +177,17 @@ class TileNode {
             if (hasClaim !== null) return;
             row.forEach((tile, x) => {
                 if (hasClaim !== null) return;
-                if (tile.claimed === null) claimsFull = false;
+                if (tile.claimed === null) {
+                    claimsFull = false;
+                    return;
+                }
                 hasClaim = this.checkNeighborClaims(x, y);
             });
         });
+
+        // If lower board has a winner, then
+        // this tile is claimed.
+        if (hasClaim!==null) return this.claim(hasClaim);
 
         // If there are no claims on the lower baord...
         if (claimsFull) {
@@ -189,12 +196,9 @@ class TileNode {
         }
 
         // If lower board did not have a claim,
+        // and the lower board is not full,
         // this tile stays in focus
-        if (hasClaim === null) return this.id;
-
-        // If lower board has a winner, then
-        // this tile is claimed.
-        return this.claim(hasClaim);
+        return this.id;
     }
 
     /**
@@ -232,15 +236,15 @@ class TileNode {
 
         for (const dir of directions) {
             const leftCount = this.countInDirection(
-                x,
-                y,
+                x + dir[0],
+                y + dir[1],
                 dir,
                 child.claimed,
                 0,
             );
             const rightCount = this.countInDirection(
-                x,
-                y,
+                x + dir[0]*-1,
+                y + dir[1]*-1,
                 // @ts-expect-error number[] and [x: number, y: number] are the same in this case
                 dir.map((v) => v * -1),
                 child.claimed,
@@ -276,7 +280,7 @@ class TileNode {
             throw new Error(
                 "'countInDirection' was ran on a node with no children to view.",
             );
-        const child = this.innerGame[y][x];
+        const child = this.innerGame?.[y]?.[x];
 
         // If we reached the edge, there are no more children to find
         if (!child) return currentCount;
@@ -318,13 +322,6 @@ class TileNode {
     }
 
     exportJSON(): TileType {
-        // const inner =
-        //     this.innerGame?.reduce<TileType[]>((newInner, tiles) => {
-        //         const moreTiles = tiles.map((tile) => {
-        //             return tile.exportJSON();
-        //         });
-        //         return [...newInner, ...moreTiles];
-        //     }, []) || null;
         const inner = this.innerGame?.flatMap((m)=> m.map(x=> x.exportJSON()))||null
 
         return {

@@ -22,36 +22,52 @@ export const basicSettingsExample: SettingsDataType = {
     size: 3,
 }
 
-export const warpAll = (root: TileNode, warp: (innerGame: TileNode[][]) => TileNode[][]): TileNode => {
+export const warpGame = (root: TileNode, warp: (innerGame: TileNode[][]) => TileNode[][], depth: number = Infinity, id: string|null = null): TileNode => {
     if (!root.innerGame) return root;
-    
-    root.innerGame = root.innerGame.map((row) => row.map((tile) => warpAll(tile, warp)))
-    root.innerGame = warp(root.innerGame)
-    
+    if (depth===0) return root;
+
+    const warpRoot = !id?root:root.getById(id);
+    if (!warpRoot.innerGame) return root;
+
+    warpRoot.innerGame = warpRoot.innerGame.map((row) => row.map((tile) => warpGame(tile, warp, depth-1)))
+    warpRoot.innerGame = warp(root.innerGame);
+
     return root;
 }
 
-export const forWarpAll = (root: TileNode, warp: (x: number, y: number, tile: TileNode) => TileNode): TileNode => {
-    return warpAll(root, (innerGame)=> {
+export const warpAll = (root: TileNode, warp: (innerGame: TileNode[][]) => TileNode[][]): TileNode => {
+    return warpGame(root, warp)
+}
+
+export const forWarpAll = (root: TileNode, warp: (x: number, y: number, tile: TileNode) => TileNode, depth: number = Infinity, id: string|null = null): TileNode => {
+    return warpGame(root, (innerGame)=> {
         return innerGame.map((row, y) => row.map((tile, x)=> {
             return warp(x, y, tile);
         }))
-    })
+    }, depth, id)
 }
 
-export const warpAllTileType = (root: TileType, warp: (innerGame: TileType[]) => TileType[]): TileType => {
+export const warpTileTypeGame = (root: TileType, warp: (innerGame: TileType[]) => TileType[], depth: number = Infinity, id: string|null = null): TileType => {
     if (!root.innerGame) return root;
+    if (depth===0) return root;
 
-    root.innerGame = root.innerGame.map((tile)=> warpAllTileType(tile, warp))
-    root.innerGame = warp(root.innerGame)
+    const warpRoot = !id?root:getTileById(root, id);
+    if (!warpRoot.innerGame) return root;
+
+    warpRoot.innerGame = warpRoot.innerGame.map((tile)=> warpTileTypeGame(tile, warp, depth-1))
+    warpRoot.innerGame = warp(warpRoot.innerGame);
 
     return root;
 }
 
-export const forWarpAllTileType = (root: TileType, warp: (index: number, tile: TileType) => TileType): TileType => {
-    return warpAllTileType(root, (innerGame)=> {
+export const warpAllTileType = (root: TileType, warp: (innerGame: TileType[]) => TileType[]): TileType => {
+    return warpTileTypeGame(root, warp);
+}
+
+export const forWarpAllTileType = (root: TileType, warp: (index: number, tile: TileType) => TileType, depth: number = Infinity, id: string|null = null): TileType => {
+    return warpTileTypeGame(root, (innerGame)=> {
         return innerGame.map((tile, index) => warp(index, tile))
-    })
+    }, depth, id)
 }
 
 export const basicTileType = (warpGames?: (innerGame: TileType[]) => TileType[]): TileType => {
@@ -71,10 +87,10 @@ export const newBasicTileGame = () => {
  * @param warp function to warp using
  * @returns the root
  */
-export const warpId = (id: string, tileRoot: TileType, warp: (innerGame: TileType[]) => TileType[]): TileType => {
-    const ref = getTileById(tileRoot, id);
-    if (ref.innerGame===null) throw new Error("Referenced tile must have an innerGame")
-    const newInner = warp(ref.innerGame);
-    ref.innerGame = newInner;
-    return tileRoot;
+export const warpTileTypeId = (id: string, tileRoot: TileType, warp: (innerGame: TileType[]) => TileType[]): TileType => {
+    return warpTileTypeGame(tileRoot, warp, 1, id)
+}
+
+export const warpGameId = (id: string, tileRoot: TileNode, warp: (innerGame: TileNode[][]) => TileNode[][]): TileNode => {
+    return warpGame(tileRoot, warp, 1, id);
 }
