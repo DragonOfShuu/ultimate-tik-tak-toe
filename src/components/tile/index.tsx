@@ -6,6 +6,7 @@ import { getTileById } from "../../contexts/gameManager/TileNode";
 
 type Props = {
     className?: string;
+    style?: React.CSSProperties
     onClick?: (e: React.MouseEvent) => unknown;
     tileId: string;
 };
@@ -18,6 +19,7 @@ const Tile = (props: Props) => {
         () => getTileById(gameState.tileState, props.tileId),
         [gameState.tileState, props.tileId],
     );
+    const isClaimed = useMemo(()=> correTile.claimed!==null, [correTile]);
     const tileIcon = useGetTileIcon(theme, correTile);
 
     const handleClick = (e: React.MouseEvent) => {
@@ -26,19 +28,21 @@ const Tile = (props: Props) => {
     };
 
     return (
-        <div className={props.className}>
+        <div className={props.className} style={props.style}>
             <button
-                className={`size-full hover:bg-white/50`}
+                className={`size-full grid group ${isClaimed?`cursor-default`:``}`}
                 onClick={handleClick}
             >
                 {tileIcon === null ? (
                     <></>
                 ) : (
                     <img
-                        src={tileIcon}
-                        className={`size-full object-contain`}
+                    src={tileIcon}
+                    className={`size-full object-contain`}
+                    style={{gridColumn: 1, gridRow: 1}}
                     />
                 )}
+                <div className={`group-hover:bg-white/50 ${isClaimed?`hidden`:``} size-full rounded-lg`} style={{gridColumn: 1, gridRow: 1}} />
             </button>
         </div>
     );

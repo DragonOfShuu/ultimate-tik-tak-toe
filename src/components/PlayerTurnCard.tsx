@@ -14,9 +14,9 @@ const PlayerTurnCard = (props: Props) => {
 
     return (
         <div className={props.className}>
-            <div className={`size-full rounded-lg flex flex-row gap-2 p-4`}>
+            <div className={`size-full rounded-lg flex flex-row items-center gap-6 p-4`}>
                 <img src={currIcon} className={`h-full w-auto`} />
-                <p>{`It is your turn!`}</p>
+                <h2 className={``}>{`It is your turn!`}</h2>
             </div>
         </div>
     );

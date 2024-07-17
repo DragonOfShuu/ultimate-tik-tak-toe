@@ -18,12 +18,16 @@ export type TileNodeConstructType =
 
 export const charScale = "0123456789abcdefghijklmnopqrstuvwxyz";
 
-export const convertCharToCoords = (char: string, maxXSize: number) => {
+export const convertCharToCoords = (char: string, maxSize: number) => {
     const digit = charScale.indexOf(char);
-    const y = Math.floor(digit / maxXSize);
-    const x = digit % maxXSize;
-    return { x, y };
+    return convertDigitToCoords(digit, maxSize)
 };
+
+export const convertDigitToCoords = (digit: number, maxSize: number) => {
+    const y = Math.floor(digit / maxSize);
+    const x = digit % maxSize;
+    return { x, y };
+}
 
 export const convertCoordsToChar = (x: number, y: number, maxXSize: number) => {
     return charScale[y * maxXSize + x];
@@ -40,11 +44,11 @@ export const convertCharToIndex = (char: string) => {
 export const getTileById = (tile: TileType, id: string): TileType => {
     if (id === "") return tile;
     if (tile.innerGame === null)
-        throw new Error("Id is too long, the tile does not exist");
+        throw new Error(`Id is too long, the tile does not exist [${id}]`);
 
     const char = id[0];
     const nextTile = tile.innerGame?.[convertCharToIndex(char)];
-    if (!nextTile) throw new Error("Id references a tile that does not exist.");
+    if (!nextTile) throw new Error(`Id references a tile that does not exist [${id}]`);
 
     return getTileById(nextTile, id.slice(1));
 };

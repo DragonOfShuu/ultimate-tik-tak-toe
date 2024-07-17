@@ -15,10 +15,8 @@ const GameDisplay = (props: Props) => {
                 id={gameState.currentTileFocus}
                 className={`w-96 h-96`}
             />
-            <div className={`fixed`}>
-                <div className="left-0 bottom-0">
-                    <PlayerTurnCard className={`w-48 h-24`} />
-                </div>
+            <div className={`fixed left-0 bottom-0`}>
+                <PlayerTurnCard className={`h-24`} />
             </div>
         </div>
     );
