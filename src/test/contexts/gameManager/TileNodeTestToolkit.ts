@@ -30,7 +30,7 @@ export const warpGame = (root: TileNode, warp: (innerGame: TileNode[][]) => Tile
     if (!warpRoot.innerGame) return root;
 
     warpRoot.innerGame = warpRoot.innerGame.map((row) => row.map((tile) => warpGame(tile, warp, depth-1)))
-    warpRoot.innerGame = warp(root.innerGame);
+    warpRoot.innerGame = warp(warpRoot.innerGame);
 
     return root;
 }

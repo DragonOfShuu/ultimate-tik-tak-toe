@@ -13,7 +13,6 @@ export type GameManagerActionType =
 
 export type GameManagerDataType = {
     settings: SettingsDataType;
-    // tileRoot: TileNode;
     tileState: TileType;
     currentPlayerTurn: number;
     currentTileFocus: string;
@@ -47,7 +46,6 @@ export const gameManagerReducer = (
     prevState: GameManagerDataType,
     action: GameManagerActionType,
 ): GameManagerDataType => {
-    console.log("Reducer ran")
     switch (action.type) {
         case "setTileState": {
             if (action.root === prevState.tileState) return prevState;
@@ -62,7 +60,6 @@ export const gameManagerReducer = (
         }
 
         case "click": {
-            console.log("click ran")
             if (prevState === null)
                 throw new Error(
                     "Click was ran when a game was not initialized",
@@ -88,7 +85,6 @@ export const gameManagerReducer = (
                         prevState.currentPlayerTurn,
                     ),
                 };
-                console.log('Has an inner game: ', newStateAfterInnerGame)
                 return newStateAfterInnerGame
             }
 
@@ -104,7 +100,6 @@ export const gameManagerReducer = (
                 ),
                 currentTileFocus: newFocus,
             };
-            console.log("New state after click: ", newStateAfterClick)
             return newStateAfterClick;
         }
     }

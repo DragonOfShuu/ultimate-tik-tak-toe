@@ -72,7 +72,6 @@ const reactImplementChanges = <T extends ValueDataType>(
 
         data = newData;
         newChangeKeys = Object.keys(implementedChanges);
-        console.log(allChanges);
     }
 
     return data;

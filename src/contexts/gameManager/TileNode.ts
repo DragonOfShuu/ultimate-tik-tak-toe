@@ -29,15 +29,23 @@ export const convertCoordsToChar = (x: number, y: number, maxXSize: number) => {
     return charScale[y * maxXSize + x];
 };
 
+export const convertIndexToChar = (index: number) => {
+    return charScale[index];
+}
+
+export const convertCharToIndex = (char: string) => {
+    return charScale.indexOf(char);
+}
+
 export const getTileById = (tile: TileType, id: string): TileType => {
-    if (!id.startsWith(tile.id)) throw new Error('Id is not inside of this tile.');
-    if (tile.id===id) return tile;
+    if (id==='') return tile;
     if (tile.innerGame===null) throw new Error('Id is too long, the tile does not exist');
-    for (const i of tile.innerGame) {
-        if (id.startsWith(i.id))
-            return getTileById(i, id);
-    }
-    throw new Error('Id references a tile that does not exist.')
+
+    const char = id[0];
+    const nextTile = tile.innerGame?.[convertCharToIndex(char)];
+    if (!nextTile) throw new Error('Id references a tile that does not exist.')
+
+    return getTileById(nextTile, id.slice(1))
 }
 
 export const isTileModified = (tile: TileType): boolean => {

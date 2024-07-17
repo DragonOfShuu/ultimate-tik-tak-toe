@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useGameManager } from "../../contexts/gameManager";
 import Tile from "../tile";
+import { convertIndexToChar } from "../../contexts/gameManager/TileNode";
 
 type Props = {
     className?: string;
@@ -22,12 +23,14 @@ const TicTacToeGrid = ({id, className}: Props) => {
 
     const gridTemplates = useGridSections(gameState.settings.size);
 
+    console.log(gameState.tileState)
+
     return (
         <div className={className}>
             <div className={`size-full grid`} style={{gridTemplateRows: gridTemplates, gridTemplateColumns: gridTemplates}}>
                 {
                     Object.keys([...Array(tileInnerCount)]).map((idAddon)=> {
-                        const newTileId = thisId+idAddon;
+                        const newTileId = thisId+convertIndexToChar(Number.parseInt(idAddon));
                         return <Tile tileId={newTileId} key={newTileId} />
                     })
                 }

@@ -4,8 +4,6 @@ import { basicTileType, forWarpAll, newBasicTileGame } from "./TileNodeTestToolk
 
 test('Input of ImportJSON equals the output of ExportJSON', ()=> {
     const importObject = newBasicTileGame();
-    console.log("After import: ")
-    console.dir(importObject, { depth: null })
     expect(importObject.exportJSON()).toEqual(basicTileType())
 })
 
@@ -86,7 +84,7 @@ test('Check Claim Returns Correct Focus', ()=> {
      * - - -
      * - - -
      */
-    let focus = newTileRoot().getById('00')['checkClaim']();
+    let focus = newTileRoot().getById('0')['checkClaim']();
     expect(focus).toBe('')
 
     /**
@@ -96,6 +94,7 @@ test('Check Claim Returns Correct Focus', ()=> {
      */
     const tileRoot1 = newTileRoot();
     tileRoot1.getById('00').claimed = 1;
-    focus = tileRoot1.getById('00')['checkClaim']();
+    focus = tileRoot1.getById('0')['checkClaim']();
+    console.dir(tileRoot1,  { depth:null })
     expect(focus).toBe('0');
 })
