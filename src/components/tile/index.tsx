@@ -11,17 +11,19 @@ type Props = {
 };
 
 const Tile = (props: Props) => {
-    const { gameState, gameStateDispatch } =
-        useGameManager();
+    const { gameState, gameStateDispatch } = useGameManager();
     const { theme } = useTheme();
 
-    const correTile = useMemo(() => getTileById(gameState.tileState, props.tileId), [gameState.tileState, props.tileId]);
+    const correTile = useMemo(
+        () => getTileById(gameState.tileState, props.tileId),
+        [gameState.tileState, props.tileId],
+    );
     const tileIcon = useGetTileIcon(theme, correTile);
 
     const handleClick = (e: React.MouseEvent) => {
         props.onClick?.(e);
-        gameStateDispatch({ type: 'click', tileId: props.tileId });
-    }
+        gameStateDispatch({ type: "click", tileId: props.tileId });
+    };
 
     return (
         <div className={props.className}>
@@ -29,10 +31,14 @@ const Tile = (props: Props) => {
                 className={`size-full hover:bg-white/50`}
                 onClick={handleClick}
             >
-                {
-                    tileIcon===null?<></>:
-                        <img src={tileIcon} className={`size-full object-contain`} />
-                }
+                {tileIcon === null ? (
+                    <></>
+                ) : (
+                    <img
+                        src={tileIcon}
+                        className={`size-full object-contain`}
+                    />
+                )}
             </button>
         </div>
     );

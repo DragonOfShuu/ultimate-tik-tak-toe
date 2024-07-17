@@ -8,7 +8,7 @@ export type GameManagerContextType = {
 };
 
 export type GameManagerActionType =
-    | { type: "setTileState"; root: TileType } 
+    | { type: "setTileState"; root: TileType }
     | { type: "click"; tileId: string };
 
 export type GameManagerDataType = {
@@ -31,7 +31,13 @@ export const initGameManager = (
 ): GameManagerDataType => {
     return {
         settings: settings,
-        tileState: new TileNode("", null, settings.depth, null, settings).exportJSON(),
+        tileState: new TileNode(
+            "",
+            null,
+            settings.depth,
+            null,
+            settings,
+        ).exportJSON(),
         currentPlayerTurn: 0,
         currentTileFocus: "",
     };
@@ -69,7 +75,10 @@ export const gameManagerReducer = (
             if (action.tileId.length !== prevState.currentTileFocus.length + 1)
                 return prevState;
 
-            const newTileRoot = TileNode.importJSON(prevState.tileState, prevState.settings);
+            const newTileRoot = TileNode.importJSON(
+                prevState.tileState,
+                prevState.settings,
+            );
             const tileRef = newTileRoot.getById(action.tileId);
             // If tile is already claimed, ignore this
             if (tileRef.claimed !== null) return prevState;
@@ -85,7 +94,7 @@ export const gameManagerReducer = (
                         prevState.currentPlayerTurn,
                     ),
                 };
-                return newStateAfterInnerGame
+                return newStateAfterInnerGame;
             }
 
             // What happens if we click a tile without an inner game, that is unclaimed

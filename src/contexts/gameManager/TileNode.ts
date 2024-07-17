@@ -5,14 +5,14 @@ export type TileNodeConstructType =
           id: string,
           parent: TileNode | null,
           innerGame: TileNode[][] | null,
-          claim: number|null,
+          claim: number | null,
           settings: SettingsDataType,
       ]
     | [
           id: string,
           parent: TileNode | null,
           depthRemaining: number,
-          claim: number|null,
+          claim: number | null,
           settings: SettingsDataType,
       ];
 
@@ -31,32 +31,33 @@ export const convertCoordsToChar = (x: number, y: number, maxXSize: number) => {
 
 export const convertIndexToChar = (index: number) => {
     return charScale[index];
-}
+};
 
 export const convertCharToIndex = (char: string) => {
     return charScale.indexOf(char);
-}
+};
 
 export const getTileById = (tile: TileType, id: string): TileType => {
-    if (id==='') return tile;
-    if (tile.innerGame===null) throw new Error('Id is too long, the tile does not exist');
+    if (id === "") return tile;
+    if (tile.innerGame === null)
+        throw new Error("Id is too long, the tile does not exist");
 
     const char = id[0];
     const nextTile = tile.innerGame?.[convertCharToIndex(char)];
-    if (!nextTile) throw new Error('Id references a tile that does not exist.')
+    if (!nextTile) throw new Error("Id references a tile that does not exist.");
 
-    return getTileById(nextTile, id.slice(1))
-}
+    return getTileById(nextTile, id.slice(1));
+};
 
 export const isTileModified = (tile: TileType): boolean => {
-    if (tile.claimed!==null) return true;
-    if (tile.innerGame===null) return false;
+    if (tile.claimed !== null) return true;
+    if (tile.innerGame === null) return false;
     for (const i of tile.innerGame) {
         const isModified = isTileModified(i);
         if (isModified) return true;
     }
     return false;
-}
+};
 
 /**
  * Tiles will use an Object-Oriented solution, where the reducer
@@ -161,11 +162,11 @@ class TileNode {
     /**
      * Check if the lower game has a winner.
      * If so, check the claim of the next parent
-     * 
-     * THIS FUNCTION HAS SIDE EFFECTS! It will 
+     *
+     * THIS FUNCTION HAS SIDE EFFECTS! It will
      * distribute necessary claims if there is
      * a winner on a lower board.
-     * 
+     *
      * @returns closest parent that has not been claimed tileID
      */
     private checkClaim(): string {
@@ -195,7 +196,7 @@ class TileNode {
 
         // If lower board has a winner, then
         // this tile is claimed.
-        if (hasClaim!==null) return this.claim(hasClaim);
+        if (hasClaim !== null) return this.claim(hasClaim);
 
         // If there are no claims on the lower baord...
         if (claimsFull) {
@@ -251,8 +252,8 @@ class TileNode {
                 0,
             );
             const rightCount = this.countInDirection(
-                x + dir[0]*-1,
-                y + dir[1]*-1,
+                x + dir[0] * -1,
+                y + dir[1] * -1,
                 // @ts-expect-error number[] and [x: number, y: number] are the same in this case
                 dir.map((v) => v * -1),
                 child.claimed,
@@ -312,14 +313,14 @@ class TileNode {
      */
     isModified(): boolean {
         // If this tile is claimed, it has been modified
-        if (this.claimed!==null) return true;
+        if (this.claimed !== null) return true;
         // If this tile does not have an inner game
         // and has not been claimed, return false
-        if (this.innerGame===null) return false;
+        if (this.innerGame === null) return false;
         for (const row of this.innerGame) {
             for (const tile of row) {
                 const value = tile.isModified();
-                // If the lower tile has been 
+                // If the lower tile has been
                 // modified, return true
                 if (value) return true;
             }
@@ -330,7 +331,9 @@ class TileNode {
     }
 
     exportJSON(): TileType {
-        const inner = this.innerGame?.flatMap((m)=> m.map(x=> x.exportJSON()))||null
+        const inner =
+            this.innerGame?.flatMap((m) => m.map((x) => x.exportJSON())) ||
+            null;
 
         return {
             id: this.id,
@@ -342,17 +345,23 @@ class TileNode {
     public static importJSON(
         x: TileType,
         settings: SettingsDataType,
-        parent?: TileNode
+        parent?: TileNode,
     ): TileNode {
-        const newTile = new TileNode(x.id, parent??null, [], x.claimed, settings);
+        const newTile = new TileNode(
+            x.id,
+            parent ?? null,
+            [],
+            x.claimed,
+            settings,
+        );
         const newInnerGame =
-            x.innerGame?.reduce<TileNode[][]>((prev, curr, ind)=> {
+            x.innerGame?.reduce<TileNode[][]>((prev, curr, ind) => {
                 if (ind % settings.size === 0) prev.push([]);
                 const latestArray = prev.slice(-1)[0];
                 latestArray.push(this.importJSON(curr, settings, newTile));
-                prev[prev.length-1] = latestArray;
+                prev[prev.length - 1] = latestArray;
                 return prev;
-            }, []) || null
+            }, []) || null;
         newTile.innerGame = newInnerGame;
         return newTile;
     }
