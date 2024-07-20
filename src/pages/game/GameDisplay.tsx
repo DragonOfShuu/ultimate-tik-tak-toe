@@ -1,5 +1,6 @@
 import PlayerTurnCard from "../../components/PlayerTurnCard";
 import TicTacToeGrid from "../../components/ticTacToeGrid";
+import WinDialog from "../../components/winDialog";
 import { useGameManager } from "../../contexts/gameManager";
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 
 const GameDisplay = (props: Props) => {
     const { gameState } = useGameManager();
-
+    
     return (
         <div className={props.className}>
             <TicTacToeGrid
@@ -18,6 +19,7 @@ const GameDisplay = (props: Props) => {
             <div className={`fixed left-0 bottom-0`}>
                 <PlayerTurnCard className={`h-24`} />
             </div>
+            <WinDialog />
         </div>
     );
 };
